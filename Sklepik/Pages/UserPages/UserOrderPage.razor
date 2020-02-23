@@ -1,0 +1,29 @@
+﻿@page "/myorder"
+
+<h1>Wybierz towary do koszyka</h1>
+
+<div>
+    <MatTable Items="@_myOrderViewModel.ProductList"
+              LoadInitialData="true"
+              Striped="true"
+              FilterByColumnName="ItemId"
+              AllowSelection="true"
+              DebounceMilliseconds="50" PageSize="25" Style="width:100%">
+        <MatTableHeader>
+            <th>Kategoria</th>
+            <th>Kod</th>
+            <th>Nazwa</th>
+            <th>Cena Brutto</th>
+            <th>Do Koszyka</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.CategoryName</td>
+            <td>@context.ItemId</td>
+            <td>@context.ItemName</td>
+            <td>@context.PriceGross</td>
+            <td><MatSlideToggle @bind-Value="@context.IsInCart"></MatSlideToggle></td>
+        </MatTableRow>
+    </MatTable>
+</div>
+
+@*@onclick="@(() => _myOrderViewModel.AddToCart(context))"*@

@@ -1,0 +1,71 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Sklepik</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+    </ul>
+    <AuthorizeView Roles="Admin">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="categorypage" Match="NavLinkMatch.All">
+                    <span class="oi oi-grid-two-up" aria-hidden="true"></span> Kategorie
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="productpage">
+                    <span class="oi oi-grid-three-up" aria-hidden="true"></span> Produkty
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="currentorders">
+                    <span class="oi oi-clipboard" aria-hidden="true"></span> Zamówienia
+                </NavLink>
+            </li>
+        </ul>
+    </AuthorizeView>
+
+    <AuthorizeView Roles="Admin, User">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="myorder">
+                    <span class="oi oi-dollar" aria-hidden="true"></span> Na zakupy...
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="mycart">
+                    <span class="oi oi-cart" aria-hidden="true"></span> Mój koszyk
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="mycurrentorders">
+                    <span class="oi oi-folder" aria-hidden="true"></span>Bieżące zamówienia
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="myorderhistory">
+                    <span class="oi oi-folder" aria-hidden="true"></span>Historia zamówień
+                </NavLink>
+            </li>
+        </ul>
+    </AuthorizeView>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

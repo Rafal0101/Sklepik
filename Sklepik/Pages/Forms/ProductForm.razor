@@ -1,0 +1,49 @@
+﻿@if (ShowForm)
+{
+    <EditForm Model="product" OnValidSubmit="SubmitForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="row py-2">
+            <div class="col-4">
+                Kategoria
+            </div>
+            <div class="col-8">
+                <select @onchange="CategorySelectionChanged" class="form-control">
+                    @foreach (var categoryInd in Categories)
+                    {
+                        <option value="@categoryInd.Id"
+                                selected="@(categoryInd.Id == product.CategoryId ? true : false)">
+                            @categoryInd.Name
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Label="Kod" @bind-Value="@product.ItemId"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Label="Nazwa" @bind-Value="@product.Name"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true"
+                          Label="Netto"
+                          TValue="double"
+                          @bind-Value="@product.PriceNet"
+                          OnFocusOut="CalculateGross"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Label="VAT" @bind-Value="@product.Tax"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true"
+                          Label="Brutto" TValue="double" @bind-Value="@product.PriceGross"></MatTextField>
+        </div>
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4" style="margin-top: 20px">
+            <MatButton Raised="true" OnClick="Cancel" Style="float: left; background-color: gray">Anuluj</MatButton>
+            <MatButton Type="submit" Raised="true" Style="float: right">Zapisz</MatButton>
+        </div>
+
+    </EditForm>
+
+}

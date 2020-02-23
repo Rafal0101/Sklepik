@@ -1,0 +1,31 @@
+﻿@using Domain.Model
+<table class="table">
+    <thead>
+        <tr>
+            <th>Użytkownik</th>
+            <th>Ilość zamówień</th>
+            <th>Wartość zamówień</th>
+            <th>Edycja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in SummaryModel)
+        {
+            <tr>
+
+                <td>@item.BuyerId</td>
+                <td>@item.Qty</td>
+                <td>@item.SummaryValueFormatted</td>
+                <td><button type="button" class="btn btn-primary" @onclick="@(() => OnClickEdit.InvokeAsync(item.BuyerId))">Edytuj</button></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public  List<OrderSummaryModel> SummaryModel { get; set; }
+    [Parameter] 
+    public EventCallback<string> OnClickEdit { get; set; }
+}

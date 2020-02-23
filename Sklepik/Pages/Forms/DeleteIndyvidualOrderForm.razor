@@ -1,0 +1,27 @@
+﻿
+
+@if (ShowForm)
+{
+    <EditForm Model="orderModel" OnValidSubmit="SubmitForm">
+        <DataAnnotationsValidator />
+
+        <table width="400px" />
+
+        <div>
+            <MatTextField Label="Id" ReadOnly="true" @bind-Value="@orderModel.Id" FullWidth="true"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Dense="true" Label="Data" ReadOnly="true" @bind-Value="@orderModel.CreationDateFormatted"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Dense="true" Label="Wartość" ReadOnly="true" @bind-Value="@orderModel.SummaryValue"></MatTextField>
+        </div>
+        <ValidationSummary />
+
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4" style="margin-top: 20px">
+            <MatButton Type="submit" Raised="true" Style="float: right">Zapisz</MatButton>
+            <MatButton Raised="true" OnClick="Cancel" Style="float: left; background-color: gray">Anuluj</MatButton>
+        </div>
+    </EditForm>
+
+}

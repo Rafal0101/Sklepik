@@ -1,0 +1,24 @@
+﻿
+@if (ShowForm)
+{
+    <EditForm Model="category" OnValidSubmit="SubmitForm">
+        <DataAnnotationsValidator />
+
+        <table width="400px" />
+
+        <div>
+            <MatTextField Label="Nazwa" @bind-Value="@category.Code" FullWidth="true"></MatTextField>
+        </div>
+        <div>
+            <MatTextField FullWidth="true" Dense="true"
+                          Label="Opis" @bind-Value="@category.Name"></MatTextField>
+        </div>
+        <ValidationSummary />
+
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4" style="margin-top: 20px">
+            <MatButton Type="submit" Raised="true" Style="float: right">Zapisz</MatButton>
+            <MatButton Raised="true" OnClick="Cancel" Style="float: left; background-color: gray">Anuluj</MatButton>
+        </div>
+    </EditForm>
+
+}

@@ -1,0 +1,21 @@
+﻿@page "/currentorders"
+
+
+@if (!InEditUserOrdersMode)
+{
+    <Sklepik.Pages.Forms.UsersOrdersSummary SummaryModel="_sellerCurrentOrderViewModel.SummaryOrdersList" OnClickEdit="ClickEdit" />
+}
+else
+{
+    @if (_sellerCurrentOrderViewModel.OrdersList.Count == 0)
+    {
+        <h5>Nie ma aktualnie żadnych zamówień</h5>
+    }
+    else
+    {
+        @foreach (var header in _sellerCurrentOrderViewModel.OrdersList)
+        {
+            <Sklepik.Pages.Forms.SellerOrderCard Order="header" OnClickDel="ClickDel" />
+        }
+    }
+}

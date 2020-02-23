@@ -1,0 +1,14 @@
+﻿@page  "/mycurrentorders"
+<table>
+    @if (_myCurrentOrdersViewModel.OrdersList.Count == 0)
+    {
+        <h5>Nie ma aktualnie żadnych zamówień</h5>
+    }
+    else
+    {
+        @foreach (var header in _myCurrentOrdersViewModel.OrdersList)
+        {
+            <Sklepik.Pages.Forms.UserOrderCard Order="header" OnClickDel="ClickDel" />
+        }
+    }
+</table>

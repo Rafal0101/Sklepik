@@ -1,0 +1,32 @@
+<CascadingAuthenticationState>
+    <MatThemeProvider Theme="@theme">
+        <Router AppAssembly="@typeof(Program).Assembly">
+            <Found Context="routeData">
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            </Found>
+            <NotFound>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p>Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            </NotFound>
+        </Router>
+    </MatThemeProvider>
+</CascadingAuthenticationState>
+
+@code
+    {
+    MatTheme theme = new MatTheme()
+    {
+        //Primary = MatThemeColors.Blue._800.Value,
+        //Secondary = MatThemeColors.Orange._500.Value
+        Primary = "#006488",
+        Secondary = "#006488"
+    };
+    MatTheme theme2 = new MatTheme()
+    {
+        //Primary = MatThemeColors.Blue._800.Value,
+        //Secondary = MatThemeColors.Orange._500.Value
+        Primary = "black",
+        Secondary = "yellow"
+    };
+}
