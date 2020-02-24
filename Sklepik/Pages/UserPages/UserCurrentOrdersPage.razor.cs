@@ -18,6 +18,11 @@ namespace Sklepik.Pages.UserPages
             _myCurrentOrdersViewModel.PropertyChanged += (obj, args) => StateHasChanged();
         }
 
+        protected override async Task OnInitializedAsync()
+        {
+            await _myCurrentOrdersViewModel.LoadOrdersList();
+        }
+
         void ClickDel(OrderHeaderModel OrderHeaderModel)
         {
             _myCurrentOrdersViewModel.DeleteOrder(OrderHeaderModel);

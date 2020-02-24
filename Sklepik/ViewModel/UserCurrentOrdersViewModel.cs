@@ -25,11 +25,10 @@ namespace Sklepik.ViewModel
             _orderRepository = orderRepository;
             _modalService = modalService;
             _authenticationStateProvider = authenticationStateProvider;
-            LoadOrdersList();
             
         }
 
-        private async Task LoadOrdersList()
+        public async Task LoadOrdersList()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             string user = authState.User.Identity.Name;
@@ -44,6 +43,7 @@ namespace Sklepik.ViewModel
 
             OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(user, OrderStatus.Submitted));
             OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(user, OrderStatus.InReview)));
+           // return null;
         }
 
         private List<OrderHeaderModel> _oredersList = new List<OrderHeaderModel>();
@@ -66,13 +66,13 @@ namespace Sklepik.ViewModel
             _modalService.Show<DeleteIndyvidualOrderForm>("Czy na pewno chcesz usunąć zamówienie?", parameters, options);
         }
 
-        private void _modalService_OnClose(ModalResult result)
+        private async void _modalService_OnClose(ModalResult result)
         {
             if (!result.Cancelled)
             {
                 OrderHeaderModel updated = (OrderHeaderModel)result.Data;
                 _orderRepository.Delete(updated.Id);
-                LoadOrdersList();
+                await LoadOrdersList();
             }
             _modalService.OnClose -= _modalService_OnClose;
         }
