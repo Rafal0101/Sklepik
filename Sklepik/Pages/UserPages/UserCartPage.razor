@@ -3,7 +3,7 @@
 <h3>Zawartość Twojego koszyka</h3>
 
 <div>
-    <MatTable Items="@_myCartViewModel.ItemsInCart"
+    <MatTable Items="@_userCartViewModel.ItemsInCart"
               LoadInitialData="true"
               Striped="true"
               FilterByColumnName="ItemId"
@@ -22,23 +22,24 @@
             <td>@context.CategoryName</td>
             <td>@context.ItemId</td>
             <td>@context.ItemName</td>
-            <td><MatNumericUpDownField Label="Ustaw ilość" @bind-Value="@context.Quantity" @onkeydown="@(() => _myCartViewModel.RecalculateOrder())" /></td>
+            <td><MatNumericUpDownField Label="Ustaw ilość" @bind-Value="@context.Quantity"/></td>
+            @*<td><MatNumericUpDownField Label="Ustaw ilość" @bind-Value="@context.Quantity" @onkeydown="@(() => _myCartViewModel.RecalculateOrder())" /></td>*@
             <td>@String.Format("{0:f2} zł", @context.PriceGross)</td>
             <td>@String.Format("{0:f2} zł", @context.ValueGross)</td>
-            <td><MatButton Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _myCartViewModel.RemoveFromCart(context))" Style="background-color: red"></MatButton></td>
+            <td><MatButton Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _userCartViewModel.RemoveFromCart(context))" Style="background-color: red"></MatButton></td>
         </MatTableRow>
     </MatTable>
 
     <p>
-        <MatTextField @bind-Value="@_myCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true" ></MatTextField>
+        <MatTextField @bind-Value="@_userCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true" ></MatTextField>
     </p>
     <p>
         <div class="form-group">
             <label for="exampleFormControlTextarea1">Dodatkowe powiadomienie dla sprzedawcy:</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" @bind="_myCartViewModel.Notification"></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" @bind="_userCartViewModel.Notification"></textarea>
         </div>
     </p>
     <p>
-        <button type="button" class="btn btn-primary" @onclick="_myCartViewModel.SaveOrder">Składam zamówienie</button>
+        <button type="button" class="btn btn-primary" @onclick="_userCartViewModel.SaveOrder">Składam zamówienie</button>
     </p>
 </div>

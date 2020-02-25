@@ -23,9 +23,9 @@ namespace Sklepik.Pages.UserPages
             await _myCurrentOrdersViewModel.LoadOrdersList();
         }
 
-        void ClickDel(OrderHeaderModel OrderHeaderModel)
+        void ClickDel(UserOrderHeaderModel userOrderHeaderModel)
         {
-            _myCurrentOrdersViewModel.DeleteOrder(OrderHeaderModel);
+            _myCurrentOrdersViewModel.DeleteOrder(userOrderHeaderModel);
         }
     }
 }

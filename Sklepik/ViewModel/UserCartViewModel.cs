@@ -14,16 +14,16 @@ namespace Sklepik.ViewModel
 {
     public class UserCartViewModel : BaseObservableObject
     {
-        private readonly OrderHeaderModel _orderHeaderModel;
+        private readonly UserOrderHeaderModel _userOrderHeaderModel;
         private readonly IOrderRepository _orderRepository;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public UserCartViewModel(OrderHeaderModel orderHeaderModel, IOrderRepository orderRepository, AuthenticationStateProvider authenticationStateProvider)
+        public UserCartViewModel(UserOrderHeaderModel userOrderHeaderModel, IOrderRepository orderRepository, AuthenticationStateProvider authenticationStateProvider)
         {
-            _orderHeaderModel = orderHeaderModel;
+            _userOrderHeaderModel = userOrderHeaderModel;
             _orderRepository = orderRepository;
             _authenticationStateProvider = authenticationStateProvider;
-            ItemsInCart = new TrulyObservableCollection<OrderLineModel>(_orderHeaderModel.AvailableItems.Where(x => x.IsInCart == true).ToList());
+            ItemsInCart = new TrulyObservableCollection<UserOrderLineModel>(_userOrderHeaderModel.AvailableItems.Where(x => x.IsInCart == true).ToList());
 
             
             RecalculateOrder();
@@ -33,9 +33,9 @@ namespace Sklepik.ViewModel
 
       
         #region PROPERTIES
-        private TrulyObservableCollection<OrderLineModel> _itemsInCart;
+        private TrulyObservableCollection<UserOrderLineModel> _itemsInCart;
 
-        public TrulyObservableCollection<OrderLineModel> ItemsInCart
+        public TrulyObservableCollection<UserOrderLineModel> ItemsInCart
         {
             get { return _itemsInCart; }
             set 
@@ -68,9 +68,9 @@ namespace Sklepik.ViewModel
             SummaryOrderValue = Math.Round(ItemsInCart.Sum(x => x.ValueGross), 2);
         }
 
-        public void RemoveFromCart(OrderLineModel model)
+        public void RemoveFromCart(UserOrderLineModel model)
         {
-            foreach (var item in _orderHeaderModel.AvailableItems.Where(x => x.ItemId == model.ItemId))
+            foreach (var item in _userOrderHeaderModel.AvailableItems.Where(x => x.ItemId == model.ItemId))
             {
                 item.IsInCart = false;
                 item.Quantity = 1;
@@ -117,7 +117,7 @@ namespace Sklepik.ViewModel
         private void ClearDataAfterOrder()
         {
             ItemsInCart.Clear();
-            _orderHeaderModel.AvailableItems.Clear();
+            _userOrderHeaderModel.AvailableItems.Clear();
             Notification = string.Empty;
             SummaryOrderValue = 0;
         }

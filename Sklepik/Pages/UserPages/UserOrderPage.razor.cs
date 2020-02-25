@@ -10,12 +10,12 @@ namespace Sklepik.Pages.UserPages
     public partial class UserOrderPage : ComponentBase
     {
         [Inject]
-        public UserOrderViewModel _myOrderViewModel { get; set; }
+        public UserOrderViewModel _userOrderViewModel { get; set; }
 
        
         protected override void OnInitialized()
         {
-            _myOrderViewModel.PropertyChanged += (obj, args) => StateHasChanged();
+            _userOrderViewModel.PropertyChanged += (obj, args) => StateHasChanged();
         }
     }
 }

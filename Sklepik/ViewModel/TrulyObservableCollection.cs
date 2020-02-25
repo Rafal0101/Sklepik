@@ -15,7 +15,6 @@ namespace Sklepik.ViewModel
         {
             CollectionChanged += FullObservableCollectionCollectionChanged;
         }
-
         public TrulyObservableCollection(IEnumerable<T> pItems) : this()
         {
             foreach (var item in pItems)

@@ -26,9 +26,14 @@ namespace Sklepik.Pages.AdminPages
             _sellerCurrentOrderViewModel.UpdateUserOrdersStatus(buyerId, OrderStatus.Submitted, OrderStatus.InReview);
             _sellerCurrentOrderViewModel.LoadOrdersList(buyerId);
         }
-        void ClickDel(OrderHeaderModel OrderHeaderModel)
+        void ClickDel(SellerOrderHeaderModel sellerOrderHeaderModel)
         {
-            _sellerCurrentOrderViewModel.DeleteOrder(OrderHeaderModel);
+            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+        }
+
+        void ClickDelOrderPosition(SellerOrderLineModel sellerOrderLineModel)
+        {
+            _sellerCurrentOrderViewModel.DeleteOrderPosition(sellerOrderLineModel);
         }
     }
 }

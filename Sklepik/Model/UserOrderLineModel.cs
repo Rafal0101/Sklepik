@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sklepik.Model
 {
-    public class OrderLineModel : BaseObservableObject
+    public class UserOrderLineModel : BaseObservableObject
     {
         public string CategoryName { get; set; }
         public string ItemId { get; set; }
@@ -34,7 +34,6 @@ namespace Sklepik.Model
             {
                  return Math.Round((Quantity * PriceGross), 2);
             }
-
         }
     }
 }

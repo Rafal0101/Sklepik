@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Sklepik.ViewModel
 {
-    public class UserCurrentOrdersViewModel : BaseObservableObject
+    public partial class UserCurrentOrdersViewModel : BaseObservableObject
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IModalService _modalService;
@@ -25,8 +25,9 @@ namespace Sklepik.ViewModel
             _orderRepository = orderRepository;
             _modalService = modalService;
             _authenticationStateProvider = authenticationStateProvider;
-            
         }
+
+        #region PUBLIC METHODS
 
         public async Task LoadOrdersList()
         {
@@ -35,46 +36,42 @@ namespace Sklepik.ViewModel
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<OrderLineModelDto, OrderLineModel>();
-                cfg.CreateMap<OrderHeaderModelDto, OrderHeaderModel>()
+                cfg.CreateMap<OrderLineModelDto, UserOrderLineModel>();
+                cfg.CreateMap<OrderHeaderModelDto, UserOrderHeaderModel>()
                 .ForMember(dest => dest.AvailableItems, map => map.MapFrom(src => src.Items));
             });
             IMapper iMapper = config.CreateMapper();
 
-            OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(user, OrderStatus.Submitted));
-            OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(user, OrderStatus.InReview)));
-           // return null;
+            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<UserOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, user));
         }
 
-        private List<OrderHeaderModel> _oredersList = new List<OrderHeaderModel>();
 
-        public List<OrderHeaderModel> OrdersList
-        {
-            get { return _oredersList; }
-            set
-            { 
-                _oredersList = value;
-                NotifyPropertyChanged(nameof(OrdersList));
-            }
-        }
-        public void DeleteOrder(OrderHeaderModel OrderHeaderModel)
+        public void DeleteOrder(UserOrderHeaderModel userOrderHeaderModel)
         {
             _modalService.OnClose += _modalService_OnClose;
             var parameters = new ModalParameters();
-            parameters.Add("order", OrderHeaderModel);
+            parameters.Add("order", userOrderHeaderModel);
             var options = new ModalOptions() { DisableBackgroundCancel = true };
             _modalService.Show<DeleteIndyvidualOrderForm>("Czy na pewno chcesz usunąć zamówienie?", parameters, options);
         }
 
+
+        #endregion
+
+
+        #region PRIVATE METHODS
         private async void _modalService_OnClose(ModalResult result)
         {
             if (!result.Cancelled)
             {
-                OrderHeaderModel updated = (OrderHeaderModel)result.Data;
+                UserOrderHeaderModel updated = (UserOrderHeaderModel)result.Data;
                 _orderRepository.Delete(updated.Id);
                 await LoadOrdersList();
             }
             _modalService.OnClose -= _modalService_OnClose;
         }
+
+        #endregion
     }
 }

@@ -16,24 +16,25 @@ namespace Sklepik.ViewModel
     {
 
         private readonly IProductRepository _productRepository;
-        private readonly OrderHeaderModel _orderHeaderModel;
+        private readonly UserOrderHeaderModel _userOrderHeaderModel;
 
 
-        public UserOrderViewModel(IProductRepository productRepository, OrderHeaderModel orderHeaderModel)
+        public UserOrderViewModel(IProductRepository productRepository, UserOrderHeaderModel userOrderHeaderModel)
         {
             _productRepository = productRepository;
-            _orderHeaderModel = orderHeaderModel;
+            _userOrderHeaderModel = userOrderHeaderModel;
+
 
             GetAllProducts();
         }
 
         private void GetAllProducts()
         {
-            if (_orderHeaderModel.AvailableItems.Count == 0)
+            if (_userOrderHeaderModel.AvailableItems.Count == 0)
             {
                 foreach (var item in _productRepository.GetAll())
                 {
-                    _orderHeaderModel.AvailableItems.Add(new OrderLineModel
+                    _userOrderHeaderModel.AvailableItems.Add(new UserOrderLineModel
                     {
                         CategoryName = item.PrimaryCategory.Name,
                         ItemId = item.ItemId,
@@ -47,26 +48,11 @@ namespace Sklepik.ViewModel
                 }
             }
 
-            ProductList = _orderHeaderModel.AvailableItems;
+            ProductList = _userOrderHeaderModel.AvailableItems;
         }
 
-        public List<OrderLineModel> ProductList { get; set; }
-        //private List<MyOrderModel> _productsList = new List<MyOrderModel>();
-        //public List<MyOrderModel> ProductList
-        //{
-        //    get { return _productsList; }
-        //    set
-        //    {
-        //        _productsList = value;
-        //        NotifyPropertyChanged(nameof(ProductList));
-        //    }
-        //}
-
-        //public void AddToCart(MyOrderModel product)
-        //{
-        //    int test = 1;
-        //}
-
+        public List<UserOrderLineModel> ProductList { get; set; }
+  
 
     }
 }

@@ -5,17 +5,31 @@
         <div class="col-md-12 jobs_index_middle_panels">
             <div class="card bg-light">
                 <h5 class="card-header">
-                    Zamówienie nr: @Order.Id
-                    <button class="btn btn-danger float-sm-right"
-                            @onclick="@(() => OnClickDel.InvokeAsync(Order))">
-                        Usuń całe zamówienie
-                    </button>
-                    <div><label>Status:</label><label style="margin-left: 10px;">@Order.StatusFormatted</label></div>
-                    <div><label>Data złożenia:</label><label style="margin-left: 10px;">@Order.CreationDateFormatted</label></div>
-                    <div><label>Wartość:</label><label style="margin-left: 10px;">@Order.SummaryValue</label></div>
+                    <table style="text-align: left; width: 100%;"
+                           border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td style="width: 10px;">Zamówienie nr:</td>
+                                <td style="width: 20%;">@SellerOrder.Id</td>
+                                <td style="width: 5%;"></td>
+                                <td style="width: 10%;">Status:</td>
+                                <td style="width: 20%;">@SellerOrder.StatusFormatted</td>
+                                <td style="width: 5%;"></td>
+                                <td colspan="1" rowspan="2" style="width: 30%;">@SellerOrder.Notification</td>
+                            </tr>
+                            <tr>
+                                <td>Data złożenia</td>
+                                <td>@SellerOrder.CreationDateFormatted</td>
+                                <td></td>
+                                <td>Wartość:</td>
+                                <td>@SellerOrder.SummaryValue</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </h5>
                 <div class="card-body">
-                    <MatTable Items="@Order.AvailableItems"
+                    <MatTable Items="@SellerOrder.Items"
                               LoadInitialData="true"
                               ShowPaging="false"
                               ShowFooter="false"
@@ -24,18 +38,38 @@
                         <MatTableHeader>
                             <th>Kod</th>
                             <th>Nazwa</th>
-                            <th>Ilość</th>
+                            <th>Ilość zamówiona</th>
+                            <th>Ilość realizowana</th>
                             <th>Cena</th>
+                            <th>Nowa Cena</th>
+                            <th>
+                                <button class="btn btn-danger float-sm-right"
+                                        @onclick="@(() => OnClickDel.InvokeAsync(SellerOrder))">
+                                    Usuń zamówienie
+                                </button>
+                            </th>
                         </MatTableHeader>
                         <MatTableRow>
                             <td>@context.ItemId</td>
-                            <td width="60%">@context.ItemName</td>
+                            <td width="40%">@context.ItemName</td>
                             <td>@context.Quantity</td>
+                            <td><input type="number" @bind-value="@context.NewQuantity" data-decimals="0" min="1" max="@context.Quantity" step="1" /></td>
                             <td>@context.PriceGross</td>
+                            <td>@context.NewValueGross</td>
+                            <button class="btn btn-danger btn-sm float-sm-right"
+                                    @onclick="@(() => OnClickDelOrderPosition.InvokeAsync(context))">
+                                <span class="oi oi-delete"></span>
+                                Usuń
+                            </button>
                         </MatTableRow>
                     </MatTable>
                 </div>
-                <div class="card-footer text-muted">@Order.Notification</div>
+                <div class="card-footer text-muted">
+                    <button class="btn btn-primary btn-sm float-sm-right">
+                        <span class="oi oi-power-standby"></span>
+                        Zaproś klienta po odbiór
+                    </button>
+                </div>
             </div>
             <br />
         </div>
@@ -44,9 +78,12 @@
 
 @code {
     [Parameter]
-    public OrderHeaderModel Order { get; set; }
+    public SellerOrderHeaderModel SellerOrder { get; set; }
     [Parameter]
-    public EventCallback<OrderHeaderModel> OnClickDel { get; set; }
+    public EventCallback<SellerOrderHeaderModel> OnClickDel { get; set; }
+    [Parameter]
+    public EventCallback<SellerOrderLineModel> OnClickDelOrderPosition { get; set; }
+
 }
 
 

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Sklepik.ViewModel
 {
-    public class SellerCurrentOrderViewModel : BaseObservableObject
+    public partial class SellerCurrentOrderViewModel : BaseObservableObject
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IModalService _modalService;
@@ -22,59 +22,66 @@ namespace Sklepik.ViewModel
         {
             _orderRepository = orderRepository;
             _modalService = modalService;
-
             LoadSummaryOrdersList();
+        }
+
+        private void OrdersList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            int test = 1;
         }
 
         private void LoadSummaryOrdersList()
         {
-            SummaryOrdersList = _orderRepository.OrderHeadersInStatusGet(OrderStatus.Submitted);
-            SummaryOrdersList.AddRange(_orderRepository.OrderHeadersInStatusGet(OrderStatus.InReview));
+            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            SummaryOrdersList = _orderRepository.OrderHeadersInStatusGet(statuses);
         }
 
-        private List<OrderSummaryModel> _summaryOrdersList;
-
-        public List<OrderSummaryModel> SummaryOrdersList
-        {
-            get { return _summaryOrdersList; }
-            set 
-            { 
-                _summaryOrdersList = value;
-                NotifyPropertyChanged(nameof(SummaryOrdersList));
-            }
-        }
+ 
         public void LoadOrdersList(string buyerId)
         {
+            //List<OrderHeaderModelDto> list = _orderRepository.GetUserOrderList(buyerId, OrderStatus.Submitted);
+
+            //foreach (var item in list)
+            //{
+            //    List<OrderLineModelDto> lines = item.Items;
+
+            //    OrdersList.Add(new SellerOrderHeaderModel
+            //    {
+            //        Id = item.Id,
+            //        BuyerId = item.BuyerId,
+            //        SellerId = item.SellerId,
+            //        Notification = item.Notification,
+            //        Status = item.Status,
+            //        SummaryValue = item.SummaryValue
+            //    });
+            //}
+
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<OrderLineModelDto, OrderLineModel>();
-                cfg.CreateMap<OrderHeaderModelDto, OrderHeaderModel>()
-                .ForMember(dest => dest.AvailableItems, map => map.MapFrom(src => src.Items));
+                cfg.CreateMap<OrderLineModelDto, SellerOrderLineModel>();
+                cfg.CreateMap<OrderHeaderModelDto, SellerOrderHeaderModel>()
+                .ForMember(dest => dest.Items, map => map.MapFrom(src => src.Items));
             });
             IMapper iMapper = config.CreateMapper();
 
-            OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(buyerId, OrderStatus.Submitted));
-            OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, List<OrderHeaderModel>>(_orderRepository.GetUserOrderList(buyerId, OrderStatus.InReview)));
+            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            SellerOrdersList = iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, buyerId));
+            //OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(buyerId, OrderStatus.InReview)));
+            //OrdersList.ForEach(x => { x.AvailableItems.ForEach(y => { y.NewQuantity = y.Quantity; }); });
+            //OrdersList = new TrulyObservableCollection<OrderHeaderModel>(RawOrdersList);
+            SellerOrdersList.ToList().ForEach(x => { x.Items.ToList().ForEach(y => { y.NewQuantity = y.Quantity; }); });
+            SellerOrdersList.CollectionChanged += OrdersList_CollectionChanged;
+
         }
 
-        private List<OrderHeaderModel> _oredersList = new List<OrderHeaderModel>();
-
-        public List<OrderHeaderModel> OrdersList
-        {
-            get { return _oredersList; }
-            set
-            {
-                _oredersList = value;
-                NotifyPropertyChanged(nameof(OrdersList));
-            }
-        }
+ 
 
         internal void UpdateUserOrdersStatus(string buyerId, OrderStatus submitted, OrderStatus inReview)
         {
             _orderRepository.ChangeUserOrdersStatus(buyerId, submitted, inReview);
         }
 
-        public void DeleteOrder(OrderHeaderModel OrderHeaderModel)
+        public void DeleteOrder(SellerOrderHeaderModel OrderHeaderModel)
         {
             _modalService.OnClose += _modalService_OnClose;
             var parameters = new ModalParameters();
@@ -87,11 +94,16 @@ namespace Sklepik.ViewModel
         {
             if (!result.Cancelled)
             {
-                OrderHeaderModel updated = (OrderHeaderModel)result.Data;
+                SellerOrderHeaderModel updated = (SellerOrderHeaderModel)result.Data;
                 _orderRepository.Delete(updated.Id);
                 LoadOrdersList(updated.BuyerId);
             }
             _modalService.OnClose -= _modalService_OnClose;
+        }
+
+        public void DeleteOrderPosition(SellerOrderLineModel orderLineModel)
+        {
+            SellerOrdersList[0].BuyerId = "yyy";
         }
     }
 }

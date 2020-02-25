@@ -17,18 +17,18 @@ namespace Sklepik.Pages.Forms
         [CascadingParameter]
         public ModalParameters Parameters { get; set; }
         bool ShowForm { get; set; } = true;
-        OrderHeaderModel orderModel { get; set; }
+        UserOrderHeaderModel userOrderModel { get; set; }
 
 
         protected override void OnInitialized()
         {
-            orderModel = Parameters.Get<OrderHeaderModel>("order");
+            userOrderModel = Parameters.Get<UserOrderHeaderModel>("order");
         }
 
         void SubmitForm()
         {
             ShowForm = false;
-            ModalService.Close(ModalResult.Ok<OrderHeaderModel>(orderModel));
+            ModalService.Close(ModalResult.Ok<UserOrderHeaderModel>(userOrderModel));
         }
 
 

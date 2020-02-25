@@ -63,7 +63,7 @@ namespace Sklepik
             services.AddTransient<UserCurrentOrdersViewModel>();
             services.AddTransient<SellerCurrentOrderViewModel>();
 
-            services.AddScoped<OrderHeaderModel>();
+            services.AddScoped<UserOrderHeaderModel>();
 
 
 

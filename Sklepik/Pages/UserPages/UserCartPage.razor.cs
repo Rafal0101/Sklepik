@@ -10,12 +10,12 @@ namespace Sklepik.Pages.UserPages
     public partial class UserCartPage : ComponentBase
     {
         [Inject]
-        public UserCartViewModel _myCartViewModel { get; set; }
+        public UserCartViewModel _userCartViewModel { get; set; }
 
 
         protected override void OnInitialized()
         {
-            _myCartViewModel.PropertyChanged += (obj, args) => StateHasChanged();
+            _userCartViewModel.PropertyChanged += (obj, args) => StateHasChanged();
         }
         
     }

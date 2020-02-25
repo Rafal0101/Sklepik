@@ -54,31 +54,43 @@ namespace DataAccess
         }
 
 
-        public List<OrderHeaderModelDto> GetUserOrderList(string buyer = null, OrderStatus status = OrderStatus.Submitted, string seller = null, int id = 0)
+        public List<OrderHeaderModelDto> GetUserOrderList(OrderStatus[] statuses, string buyer = null, string seller = null, int id = 0)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
-                List<OrderHeaderModelDto> headers = cnn.Query<OrderHeaderModelDto>("dbo.OrderHeaderGet"
-                    , param: new { BuyerId = buyer, Status = OrderStatusDictionary.GetStatus[status], SellerId = seller, Id = id }
-                    , commandType: CommandType.StoredProcedure).ToList();
-
-                foreach (var item in headers)
+                List<OrderHeaderModelDto> headers = new List<OrderHeaderModelDto>();
+                foreach (var status in statuses)
                 {
-                    string sql = "SELECT [Id], [OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [Quantity]" +
-                        "FROM [Sklepik].[dbo].[OrderLine] WHERE OrderHeaderId = @OrderHeaderId";
-                    item.Items = cnn.Query<OrderLineModelDto>(sql, param: new { OrderHeaderId = item.Id }).ToList();
-                }
+                    headers.AddRange(cnn.Query<OrderHeaderModelDto>("dbo.OrderHeaderGet"
+                        , param: new { BuyerId = buyer, Status = OrderStatusDictionary.GetStatus[status], SellerId = seller, Id = id }
+                        , commandType: CommandType.StoredProcedure).ToList());
 
+                    foreach (var item in headers)
+                    {
+                        string sql = "SELECT [Id], [OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [Quantity]" +
+                            "FROM [Sklepik].[dbo].[OrderLine] WHERE OrderHeaderId = @OrderHeaderId";
+                        item.Items = cnn.Query<OrderLineModelDto>(sql, param: new { OrderHeaderId = item.Id }).ToList();
+                    }
+                }
                 return headers;
             }
         }
 
-        public List<OrderSummaryModel> OrderHeadersInStatusGet(OrderStatus status = OrderStatus.Submitted)
+        public List<OrderSummaryModel> OrderHeadersInStatusGet(OrderStatus[] statuses)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
-                string sql = $"SELECT BuyerId, COUNT(Id) Qty, SUM(SummaryValue) SummaryValue FROM [dbo].[OrderHeader] " +
-                    $"WHERE Status = {OrderStatusDictionary.GetStatus[status]} GROUP BY BuyerId";
+                string sql = $"SELECT BuyerId, COUNT(Id) Qty, SUM(SummaryValue) SummaryValue FROM [dbo].[OrderHeader] WHERE ";
+
+                for (int i = 0; i < statuses.Length; i++)
+                {
+                    if (i > 0)
+                    {
+                        sql += " OR ";
+                    }
+                    sql += $"Status = {OrderStatusDictionary.GetStatus[statuses[i]]}";
+                }
+                sql += " GROUP BY BuyerId";
 
                 List<OrderSummaryModel> headers = cnn.Query<OrderSummaryModel>(sql).ToList();
 

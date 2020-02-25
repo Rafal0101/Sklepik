@@ -1,6 +1,4 @@
-﻿using AutoMapper.Configuration.Annotations;
-using Domain.Model;
-using Domain.States;
+﻿using Domain.States;
 using Sklepik.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -9,14 +7,31 @@ using System.Threading.Tasks;
 
 namespace Sklepik.Model
 {
-    public class OrderHeaderModel : BaseObservableObject
+    public class SellerOrderHeaderModel : BaseObservableObject
     {
+        private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            SummaryValue = Math.Round(Items.Sum(x => x.NewValueGross), 2);
+        }
+
         public int Id { get; set; }
         public string BuyerId { get; set; }
         public string SellerId { get; set; }
         public int Status { get; set; }
         public string Notification { get; set; }
-        public double SummaryValue { get; set; }
+
+        private double _summaryValue;
+
+        public double SummaryValue
+        {
+            get { return _summaryValue; }
+            set 
+            { 
+                _summaryValue = value;
+                NotifyPropertyChanged(nameof(SummaryValue));
+            }
+        }
+
         public string MergedId { get; set; }
         public DateTime CreationDate { get; set; }
 
@@ -35,7 +50,7 @@ namespace Sklepik.Model
             {
                 string result = string.Empty;
 
-                switch(OrderStatusDictionary.GetStatus.FirstOrDefault(x => x.Value == Status).Key)
+                switch (OrderStatusDictionary.GetStatus.FirstOrDefault(x => x.Value == Status).Key)
                 {
                     case OrderStatus.Submitted:
                         result = "10 - Złożone";
@@ -54,17 +69,17 @@ namespace Sklepik.Model
             }
         }
 
-
-        private List<OrderLineModel> _availableItems = new List<OrderLineModel>();
-        
-        [SourceMember("Items")]
-        public List<OrderLineModel> AvailableItems
+        private TrulyObservableCollection<SellerOrderLineModel> _items;
+        public TrulyObservableCollection<SellerOrderLineModel> Items
         {
-            get { return _availableItems; }
+            get { return _items; }
             set
             {
-                _availableItems = value;
-                NotifyPropertyChanged(nameof(AvailableItems));
+                _items = value;
+                NotifyPropertyChanged(nameof(Items));
+
+                if (_items != null)
+                    Items.CollectionChanged += Items_CollectionChanged;
             }
         }
 

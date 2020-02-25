@@ -9,26 +9,26 @@
                            border="0" cellpadding="0" cellspacing="0">
                         <tbody>
                             <tr>
-                                <td><small>Zamówienie nr:</small></td>
-                                <td><small>@Order.Id</small></td>
+                                <td><small><small>Zamówienie nr:</small></small></td>
+                                <td><small><small>@UserOrder.Id</small></small></td>
                                 <td>
-                                    <button class="btn btn-danger float-sm-right"
-                                            @onclick="@(() => OnClickDel.InvokeAsync(Order))">
+                                    <button class="btn btn-danger  float-sm-right" disabled ="@UserOrder.CanBeDeleted"
+                                            @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
                                         Usuń całe zamówienie
                                     </button>
                                 </td>
                             </tr>
                             <tr>
                                 <td><small>Status:</small></td>
-                                <td><small>@Order.StatusFormatted</small></td>
+                                <td><small>@UserOrder.StatusFormatted</small></td>
                             </tr>
                             <tr>
                                 <td><small>Data złożenia:</small></td>
-                                <td><small>@Order.CreationDateFormatted</small></td>
+                                <td><small>@UserOrder.CreationDateFormatted</small></td>
                             </tr>
                             <tr>
                                 <td><small>Wartość:</small></td>
-                                <td><small>@Order.SummaryValue</small></td>
+                                <td><small>@UserOrder.SummaryValue</small></td>
                             </tr>
                         </tbody>
                     </table>
@@ -44,7 +44,7 @@
                         <div><label>Wartość:</label><label style="margin-left: 10px;">@MyOrder.SummaryValue</label></div>
                     </h5>*@
                 <div class="card-body">
-                    <MatTable Items="@Order.AvailableItems"
+                    <MatTable Items="@UserOrder.AvailableItems"
                               LoadInitialData="true"
                               ShowPaging="false"
                               ShowFooter="false"
@@ -64,7 +64,7 @@
                         </MatTableRow>
                     </MatTable>
                 </div>
-                <div class="card-footer text-muted">@Order.Notification</div>
+                <div class="card-footer text-muted">@UserOrder.Notification</div>
             </div>
             <br />
         </div>
@@ -73,9 +73,9 @@
 
 @code {
     [Parameter]
-    public OrderHeaderModel Order { get; set; }
+    public UserOrderHeaderModel UserOrder { get; set; }
     [Parameter]
-    public EventCallback<OrderHeaderModel> OnClickDel { get; set; }
+    public EventCallback<UserOrderHeaderModel> OnClickDel { get; set; }
 }
 
 

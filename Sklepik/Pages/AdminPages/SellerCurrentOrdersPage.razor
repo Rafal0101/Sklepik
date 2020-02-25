@@ -7,15 +7,15 @@
 }
 else
 {
-    @if (_sellerCurrentOrderViewModel.OrdersList.Count == 0)
+    @if (_sellerCurrentOrderViewModel.SellerOrdersList.Count == 0)
     {
         <h5>Nie ma aktualnie żadnych zamówień</h5>
     }
     else
     {
-        @foreach (var header in _sellerCurrentOrderViewModel.OrdersList)
+        @foreach (var header in _sellerCurrentOrderViewModel.SellerOrdersList)
         {
-            <Sklepik.Pages.Forms.SellerOrderCard Order="header" OnClickDel="ClickDel" />
+            <Sklepik.Pages.Forms.SellerOrderCard SellerOrder="header" OnClickDel="ClickDel" OnClickDelOrderPosition ="ClickDelOrderPosition"/>
         }
     }
 }
