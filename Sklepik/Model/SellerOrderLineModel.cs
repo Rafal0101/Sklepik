@@ -9,6 +9,7 @@ namespace Sklepik.Model
     public class SellerOrderLineModel : BaseObservableObject 
     {
         public int Id { get; set; }
+        public int OrderHeaderId { get; set; }
         public string ItemId { get; set; }
         public string ItemName { get; set; }
         public double PriceGross { get; set; }

@@ -1,5 +1,5 @@
 ﻿@using Domain.Model
-<table class="table">
+<table class="minimalistBlack">
     <thead>
         <tr>
             <th>Użytkownik</th>
@@ -16,7 +16,9 @@
                 <td>@item.BuyerId</td>
                 <td>@item.Qty</td>
                 <td>@item.SummaryValueFormatted</td>
-                <td><button type="button" class="btn btn-primary" @onclick="@(() => OnClickEdit.InvokeAsync(item.BuyerId))">Edytuj</button></td>
+                <td><button type="button" class="btn btn-primary btn-sm" @onclick="@(() => OnClickEdit.InvokeAsync(item.BuyerId))">
+                        <i><MatIcon Icon="@MatIconNames.Edit" Style="height: 16px;"></MatIcon></i>
+                    </button></td>
             </tr>
 
         }

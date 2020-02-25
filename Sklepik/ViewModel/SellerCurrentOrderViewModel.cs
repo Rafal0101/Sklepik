@@ -36,7 +36,7 @@ namespace Sklepik.ViewModel
             SummaryOrdersList = _orderRepository.OrderHeadersInStatusGet(statuses);
         }
 
- 
+
         public void LoadOrdersList(string buyerId)
         {
             //List<OrderHeaderModelDto> list = _orderRepository.GetUserOrderList(buyerId, OrderStatus.Submitted);
@@ -74,18 +74,25 @@ namespace Sklepik.ViewModel
 
         }
 
- 
+
 
         internal void UpdateUserOrdersStatus(string buyerId, OrderStatus submitted, OrderStatus inReview)
         {
             _orderRepository.ChangeUserOrdersStatus(buyerId, submitted, inReview);
         }
 
-        public void DeleteOrder(SellerOrderHeaderModel OrderHeaderModel)
+        public void DeleteOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
         {
             _modalService.OnClose += _modalService_OnClose;
             var parameters = new ModalParameters();
-            parameters.Add("order", OrderHeaderModel);
+            UserOrderHeaderModel userOrderHeaderModel = new UserOrderHeaderModel
+            {
+                Id = sellerOrderHeaderModel.Id,
+                CreationDateFormatted = sellerOrderHeaderModel.CreationDateFormatted,
+                SummaryValue = sellerOrderHeaderModel.SummaryValue,
+                BuyerId = sellerOrderHeaderModel.BuyerId
+            };
+            parameters.Add("order", userOrderHeaderModel);
             var options = new ModalOptions() { DisableBackgroundCancel = true };
             _modalService.Show<DeleteIndyvidualOrderForm>("Czy na pewno chcesz usunąć zamówienie?", parameters, options);
         }
@@ -94,7 +101,7 @@ namespace Sklepik.ViewModel
         {
             if (!result.Cancelled)
             {
-                SellerOrderHeaderModel updated = (SellerOrderHeaderModel)result.Data;
+                UserOrderHeaderModel updated = (UserOrderHeaderModel)result.Data;
                 _orderRepository.Delete(updated.Id);
                 LoadOrdersList(updated.BuyerId);
             }
@@ -103,7 +110,8 @@ namespace Sklepik.ViewModel
 
         public void DeleteOrderPosition(SellerOrderLineModel orderLineModel)
         {
-            SellerOrdersList[0].BuyerId = "yyy";
+            var list = SellerOrdersList.SingleOrDefault(x => x.Id == orderLineModel.OrderHeaderId);
+            list.Items.Remove(orderLineModel);
         }
     }
 }

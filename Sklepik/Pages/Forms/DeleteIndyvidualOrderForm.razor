@@ -2,19 +2,19 @@
 
 @if (ShowForm)
 {
-    <EditForm Model="userOrderModel" OnValidSubmit="SubmitForm">
+    <EditForm Model="OrderModel" OnValidSubmit="SubmitForm">
         <DataAnnotationsValidator />
 
         <table width="400px" />
 
         <div>
-            <MatTextField Label="Id" ReadOnly="true" @bind-Value="@userOrderModel.Id" FullWidth="true"></MatTextField>
+            <MatTextField Label="Id" ReadOnly="true" @bind-Value="@OrderModel.Id" FullWidth="true"></MatTextField>
         </div>
         <div>
-            <MatTextField FullWidth="true" Dense="true" Label="Data" ReadOnly="true" @bind-Value="@userOrderModel.CreationDateFormatted"></MatTextField>
+            <MatTextField FullWidth="true" Dense="true" Label="Data" ReadOnly="true" @bind-Value="@OrderModel.CreationDateFormatted"></MatTextField>
         </div>
         <div>
-            <MatTextField FullWidth="true" Dense="true" Label="Wartość" ReadOnly="true" @bind-Value="@userOrderModel.SummaryValue"></MatTextField>
+            <MatTextField FullWidth="true" Dense="true" Label="Wartość" ReadOnly="true" @bind-Value="@OrderModel.SummaryValue"></MatTextField>
         </div>
         <ValidationSummary />
 
