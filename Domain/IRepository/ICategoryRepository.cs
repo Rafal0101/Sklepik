@@ -7,7 +7,7 @@ namespace Domain
 {
     public interface ICategoryRepository
     {
-        List<CategoryModel> GetAll();
+        List<CategoryModel> GetAll(string searchPattern = "");
 
         CategoryModel GetOne(object id);
         void AddCategory(CategoryModel category);

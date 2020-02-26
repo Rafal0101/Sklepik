@@ -1,41 +1,66 @@
 ﻿@page "/categorypage"
 
-    <table style="text-align: left;">
-        <tbody>
-            <tr>
-                <td>
-                    <h3>Strona kategorii</h3>
-                </td>
-                <td width="100"></td>
-                <td>
-                    <MatButton Raised="true" Icon="@MatIconNames.Playlist_add" OnClick="@_categoryViewModel.AddCategory" Style="background-color: green">Dodaj Kategorię</MatButton>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-<div>
 
-    <MatTable Items="@_categoryViewModel.CategoryList"
-              LoadInitialData="true"
-              Striped="true"
-              FilterByColumnName="Description"
-              AllowSelection="true"
-              ShowFooter="false"
-              PageSize="1000"
-              DebounceMilliseconds="50">
-        <MatTableHeader>
+<h3>Strona kategorii</h3>
+<p>
+<button class="btn btn-primary text-white" @onclick="@(() => _categoryViewModel.AddCategory())">
+    Dodaj nową kategorię
+</button>
+    <label style="margin-left: 100px;">Wyszukaj</label>
+    <input  @bind-value="_categoryViewModel.SearchingPattern" @bind-value:event="oninput"/>
+</p>
+<table class="blueTable">
+    <thead>
+        <tr>
             <th>Nazwa kategorii</th>
             <th>Opis kategorii</th>
             <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in _categoryViewModel.CategoryList)
+        {
+            <tr>
 
-        </MatTableHeader>
-        <MatTableRow>
-            <td height="30" style="padding: 0px; margin: 0px; font-size: 12px">@context.Code</td>
-            <td height="30" width="80%" style="padding: 0px; margin: 0px; font-size: 12px">@context.Name</td>
-            <td height="30px" style="padding: 0px; margin: 0px; align-items:center">
-            <MatButton height="30px" Style="height: 25px; width: 30px; padding:0px; margin:0px; " Raised="true" Icon="@MatIconNames.Edit" OnClick="@(() => _categoryViewModel.EditCategory(context))"></MatButton>
-            <MatButton height="30px" Style="height: 25px; width: 30px; padding:0px; margin:0px; background-color: red" Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _categoryViewModel.DeleteCategory(context))"></MatButton>
-            </td>
-        </MatTableRow>
-    </MatTable>
-</div>
+                <td>@item.Code</td>
+                <td>@item.Name</td>
+                <td>
+                    <a class="btn btn-primary btn-sm text-white" @onclick="@(() => _categoryViewModel.EditCategory(item))">
+                        Edytuj
+                    </a>
+                    <a class="btn btn-danger btn-sm text-white" @onclick="@(() => _categoryViewModel.DeleteCategory(item))">
+                        Usuń
+                    </a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+@*<div>
+
+        <MatTable Items="@_categoryViewModel.CategoryList"
+                  LoadInitialData="true"
+                  Striped="true"
+                  FilterByColumnName="Description"
+                  AllowSelection="true"
+                  ShowFooter="false"
+                  PageSize="1000"
+                  DebounceMilliseconds="50">
+            <MatTableHeader>
+                <th>Nazwa kategorii</th>
+                <th>Opis kategorii</th>
+                <th>Akcja</th>
+
+            </MatTableHeader>
+            <MatTableRow>
+                <td height="30" style="padding: 0px; margin: 0px; font-size: 12px">@context.Code</td>
+                <td height="30" width="80%" style="padding: 0px; margin: 0px; font-size: 12px">@context.Name</td>
+                <td height="30px" style="padding: 0px; margin: 0px; align-items:center">
+                <MatButton height="30px" Style="height: 25px; width: 30px; padding:0px; margin:0px; " Raised="true" Icon="@MatIconNames.Edit" OnClick="@(() => _categoryViewModel.EditCategory(context))"></MatButton>
+                <MatButton height="30px" Style="height: 25px; width: 30px; padding:0px; margin:0px; background-color: red" Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _categoryViewModel.DeleteCategory(context))"></MatButton>
+                </td>
+            </MatTableRow>
+        </MatTable>
+    </div>*@

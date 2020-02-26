@@ -47,13 +47,15 @@ namespace DataAccess
                 , new { product.CategoryId, product.ItemId, product.Name, product.PriceNet, product.PriceGross, product.Tax, product.Id });
         }
 
-        public List<ProductModel> GetAll()
+        public List<ProductModel> GetAll(string searchPattern = "")
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
                 string sql = "SELECT P.Id, P.CategoryId, P.ItemId, P.Name, P.PriceNet, P.PriceGross, P.Tax, " +
                     "C.Id, C.Code, C.Name " +
-                    "FROM Products P LEFT JOIN Categories C ON C.Id = P.CategoryId ORDER BY C.Name, P.ItemId";
+                    "FROM Products P LEFT JOIN Categories C ON C.Id = P.CategoryId " +
+                    $"WHERE P.ItemId LIKE '%{searchPattern}%' OR P.Name LIKE '%{searchPattern}%' " +
+                    "ORDER BY C.[Name], P.ItemId ";
 
                 var result = cnn.Query<ProductModel, CategoryModel, ProductModel>(sql,
                     (product, category) => { product.PrimaryCategory = category; return product; });

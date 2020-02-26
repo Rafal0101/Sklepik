@@ -35,9 +35,11 @@ namespace DataAccess
             _sqlDataAccess.SaveData(sql, new { category.Code, category.Name, category.Id });
         }
 
-        public List<CategoryModel> GetAll()
+        public List<CategoryModel> GetAll(string searchPattern = "")
         {
-            string sql = "SELECT Id, Code, Name FROM Categories ORDER BY Code";
+            string sql = "SELECT Id, Code, Name FROM Categories " +
+                $"WHERE Code LIKE '%{searchPattern}%' OR Name LIKE '%{searchPattern}%' " +
+                "ORDER BY Code";
             return _sqlDataAccess.LoadData<CategoryModel, dynamic>(sql, new { });
         }
 

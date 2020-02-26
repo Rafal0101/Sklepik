@@ -30,10 +30,20 @@ namespace Sklepik.ViewModel
             CategoryList = new List<CategoryModel>(_categoryRepository.GetAll());
         }
 
+        private string _searchingPattern;
+        public string SearchingPattern
+        {
+            get { return _searchingPattern; }
+            set 
+            { 
+                _searchingPattern = value;
+                CategoryList = new List<CategoryModel>(_categoryRepository.GetAll(SearchingPattern));
+                NotifyPropertyChanged(nameof(SearchingPattern));
+             }
+        }
+   
         private List<CategoryModel> _categorysList = new List<CategoryModel>();
-              
-
-        public List<CategoryModel> CategoryList
+         public List<CategoryModel> CategoryList
         {
             get { return _categorysList; }
             set 

@@ -42,6 +42,18 @@ namespace Sklepik.ViewModel
             }
         }
 
+        private string _searchingPattern;
+        public string SearchingPattern
+        {
+            get { return _searchingPattern; }
+            set
+            {
+                _searchingPattern = value;
+                ProductList = new List<ProductModel>(_productRepository.GetAll(SearchingPattern));
+                NotifyPropertyChanged(nameof(SearchingPattern));
+            }
+        }
+
         public List<CategoryModel> CategoryList { get; private set; } = new List<CategoryModel>();
 
         public void AddProduct()

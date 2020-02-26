@@ -1,47 +1,91 @@
 ﻿@page "/productpage"
 
-
-<table style="text-align: left;">
-    <tbody>
+    <h3>Strona produktów</h3>
+<p>
+    <button class="btn btn-primary text-white" @onclick="@(() => _productViewModel.AddProduct())">
+        Dodaj nowy produkt
+    </button>
+    <label style="margin-left: 100px;">Wyszukaj</label>
+    <input @bind-value="_productViewModel.SearchingPattern" @bind-value:event="oninput" />
+</p>
+<table class="blueTable">
+    <thead>
         <tr>
-            <td>
-                <h3>Strona produktów</h3>
-            </td>
-            <td width="100"></td>
-            <td>
-                <MatButton Raised="true" Icon="@MatIconNames.Playlist_add" OnClick="@_productViewModel.AddProduct" Style="background-color: green">Dodaj Produkt</MatButton>
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-
-<div>
-    <MatTable Items="@_productViewModel.ProductList"
-              LoadInitialData="true"
-              Striped="true"
-              FilterByColumnName="ItemId"
-              AllowSelection="true"
-              DebounceMilliseconds="50" PageSize="25" Style="width:100%">
-        <MatTableHeader>
-            <th style=" font-size:small">Kod towaru</th>
+            <th>Kod towaru</th>
             <th>Nazwa Towaru</th>
             <th>Cena Netto</th>
             <th>VAT</th>
             <th>Cena Brutto</th>
-            <th>Edycja</th>
-            <th>Usuwanie</th>
+            <th>Akcja</th>
             <th>Kategoria</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.ItemId</td>
-            <td width="80%">@context.Name</td>
-            <td>@context.PriceNet</td>
-            <td>@context.Tax</td>
-            <td>@context.PriceGross</td>
-            <td><MatButton Raised="true" Icon="@MatIconNames.Edit" OnClick="@(() => _productViewModel.EditProduct(context))"></MatButton></td>
-            <td><MatButton Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _productViewModel.DeleteProduct(context))" Style="background-color: red"></MatButton></td>
-            <td style="font-weight: bold">@context.PrimaryCategory.Name</td>
-        </MatTableRow>
-    </MatTable>
-</div>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in _productViewModel.ProductList)
+        {
+        <tr>
+
+            <td>@item.ItemId</td>
+            <td>@item.Name</td>
+            <td>@item.PriceNet</td>
+            <td>@item.Tax</td>
+            <td>@item.PriceGross</td>
+            <td>
+                <a class="badge badge-primary btn-sm text-white" @onclick="@(() => _productViewModel.EditProduct(item))">
+                    Edytuj
+                </a>
+                <a class="badge badge-danger btn-sm text-white" @onclick="@(() => _productViewModel.DeleteProduct(item))">
+                    Usuń
+                </a>
+            </td>
+            <td>@item.PrimaryCategory.Code</td>
+        </tr>
+
+        }
+    </tbody>
+</table>
+
+@*<table style="text-align: left;">
+        <tbody>
+            <tr>
+                <td>
+                    <h3>Strona produktów</h3>
+                </td>
+                <td width="100"></td>
+                <td>
+                    <MatButton Raised="true" Icon="@MatIconNames.Playlist_add" OnClick="@_productViewModel.AddProduct" Style="background-color: green">Dodaj Produkt</MatButton>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div>
+        <MatTable Items="@_productViewModel.ProductList"
+                  LoadInitialData="true"
+                  Striped="true"
+                  FilterByColumnName="ItemId"
+                  AllowSelection="true"
+                  DebounceMilliseconds="50" PageSize="25" Style="width:100%">
+            <MatTableHeader>
+                <th style=" font-size:small">Kod towaru</th>
+                <th>Nazwa Towaru</th>
+                <th>Cena Netto</th>
+                <th>VAT</th>
+                <th>Cena Brutto</th>
+                <th>Edycja</th>
+                <th>Usuwanie</th>
+                <th>Kategoria</th>
+            </MatTableHeader>
+            <MatTableRow>
+                <td>@context.ItemId</td>
+                <td width="80%">@context.Name</td>
+                <td>@context.PriceNet</td>
+                <td>@context.Tax</td>
+                <td>@context.PriceGross</td>
+                <td><MatButton Raised="true" Icon="@MatIconNames.Edit" OnClick="@(() => _productViewModel.EditProduct(context))"></MatButton></td>
+                <td><MatButton Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _productViewModel.DeleteProduct(context))" Style="background-color: red"></MatButton></td>
+                <td style="font-weight: bold">@context.PrimaryCategory.Name</td>
+            </MatTableRow>
+        </MatTable>
+    </div>*@
