@@ -23,6 +23,7 @@ using System.Net.Http;
 using EmbeddedBlazorContent;
 using MatBlazor;
 using Sklepik.Model;
+using Domain.Service;
 
 namespace Sklepik
 {
@@ -52,6 +53,8 @@ namespace Sklepik
             services.AddBlazoredModal();
 
             services.AddTransient<ISqlDataAccess, SqlDataAccess>();
+            services.AddTransient<IExcelReaderService, ExcelReader>();
+
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IProductRepository, ProductRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();

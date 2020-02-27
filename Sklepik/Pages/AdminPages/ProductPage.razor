@@ -1,13 +1,16 @@
 ﻿@page "/productpage"
 
     <h3>Strona produktów</h3>
-<p>
-    <button class="btn btn-primary text-white" @onclick="@(() => _productViewModel.AddProduct())">
-        Dodaj nowy produkt
-    </button>
-    <label style="margin-left: 100px;">Wyszukaj</label>
-    <input @bind-value="_productViewModel.SearchingPattern" @bind-value:event="oninput" />
-</p>
+    <p>
+        <button class="btn btn-primary text-white" @onclick="@(() => _productViewModel.AddProduct())">
+            Dodaj nowy produkt
+        </button>
+        <label style="margin-left: 100px;">Wyszukaj: </label>
+        <input @bind-value="_productViewModel.SearchingPattern" @bind-value:event="oninput" />
+        <label style="margin-left: 100px;">Importuj z Excel</label>
+        <BlazorInputFile.InputFile OnChange="ReadExcelPriceList"></BlazorInputFile.InputFile>
+        <label style="margin-left: 10px;">@_productViewModel.ActionMessage</label>
+    </p>
 <table class="blueTable">
     <thead>
         <tr>

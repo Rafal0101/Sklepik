@@ -5,6 +5,7 @@ using Sklepik.Pages.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -55,6 +56,31 @@ namespace Sklepik.ViewModel
         }
 
         public List<CategoryModel> CategoryList { get; private set; } = new List<CategoryModel>();
+
+        private MemoryStream _priceListFileBody;
+
+        public MemoryStream PriceListFileBody
+        {
+            get { return _priceListFileBody; }
+            set
+            {
+                _priceListFileBody = value;
+                NotifyPropertyChanged(nameof(PriceListFileBody));
+                ActionMessage = "Wczytjuę NOWY cennik. Czekaj...";
+                //ReadDPDFileToTransOrderModel();
+            }
+        }
+
+        private string _actionMessage = string.Empty;
+        public string ActionMessage
+        {
+            get { return _actionMessage; }
+            set
+            {
+                _actionMessage = value;
+                NotifyPropertyChanged(nameof(ActionMessage));
+            }
+        }
 
         public void AddProduct()
         {
