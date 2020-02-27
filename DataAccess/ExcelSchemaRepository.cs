@@ -1,11 +1,12 @@
-﻿using Domain.Model;
+﻿using Domain.IRepository;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace DataAccess
 {
-    public class ExcelSchemaRepository
+    public class ExcelSchemaRepository : IExcelSchemaRepository
     {
         private readonly ISqlDataAccess _sqlDataAccess;
 
@@ -16,8 +17,8 @@ namespace DataAccess
 
         public List<ExcelSchemaModel> GetExcelColumnsDefinition(string schema)
         {
-            string sql = "SELECT ColumnName, ColumnId FROM [Accountancy].[CarrierFieldsSchemaDefinition] WHERE FileSchema = @FileSchema";
-            var result = _sqlDataAccess.LoadData<ExcelSchemaModel, dynamic>(sql, new { FileSchema = schema });
+            string sql = "SELECT ColumnName, ColumnId, ColumnTitle FROM [ReadFileDefinition] WHERE SchemaTitle = @SchemaTitle";
+            var result = _sqlDataAccess.LoadData<ExcelSchemaModel, dynamic>(sql, new { SchemaTitle = schema });
 
             return result;
         }

@@ -8,5 +8,6 @@ namespace Domain.Model
     {
         public string ColumnName { get; set; }
         public int ColumnId { get; set; }
+        public string ColumnTitle { get; set; }
     }
 }

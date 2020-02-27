@@ -67,7 +67,8 @@ namespace Sklepik.ViewModel
                 _priceListFileBody = value;
                 NotifyPropertyChanged(nameof(PriceListFileBody));
                 ActionMessage = "Wczytjuę NOWY cennik. Czekaj...";
-                //ReadDPDFileToTransOrderModel();
+                _productRepository.ImportProductFromFile(_priceListFileBody);
+                ProductList = new List<ProductModel>(_productRepository.GetAll());
             }
         }
 

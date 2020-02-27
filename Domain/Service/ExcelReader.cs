@@ -1,4 +1,6 @@
-﻿using OfficeOpenXml;
+﻿using Domain.IRepository;
+using Domain.Model;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,11 +11,18 @@ namespace Domain.Service
 {
     public class ExcelReader : IExcelReaderService
     {
+        private readonly IExcelSchemaRepository _excelSchemaRepository;
+        public ExcelReader(IExcelSchemaRepository excelSchemaRepository)
+        {
+            _excelSchemaRepository = excelSchemaRepository;
+        }
         public List<ProductModel> ReadPriceListFile(MemoryStream fileBody)
         {
+            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             List<ProductModel> model = new List<ProductModel>();
 
-            List<ExcelSchemaModel> columnsId = new List<ExcelSchemaModel>(_excelSchemaReader.GetExcelColumnsDefinition(schema));
+            List<ExcelSchemaModel> columns = new List<ExcelSchemaModel>(_excelSchemaRepository.GetExcelColumnsDefinition("PriceList"));
 
             using (ExcelPackage xlPackage = new ExcelPackage(fileBody))
             {
@@ -22,69 +31,60 @@ namespace Domain.Service
                 var totalColumns = myWorksheet.Dimension.End.Column;
 
 
-                if (schema == Const.DPD_SCHEMA)
-                {
-                    if (!(myWorksheet.Cells["A1"].Value.ToString() == "id" && myWorksheet.Cells["B1"].Value.ToString() == "Nr_Faktury"))
-                    {
-                        throw new Exception("Bledne pliki");
-                    }
-                }
+                //if (schema == Const.DPD_SCHEMA)
+                //{
+                //    if (!(myWorksheet.Cells["A1"].Value.ToString() == "Kod Towaru" && myWorksheet.Cells["B1"].Value.ToString() == "Nr_Faktury"))
+                //    {
+                //        throw new Exception("Bledne pliki");
+                //    }
+                //}
 
-                if (schema == Const.EROTRANS_SCHEMA)
-                {
-                    if (!(myWorksheet.Cells["A1"].Value.ToString() == "WARTOŚĆ" && myWorksheet.Cells["B1"].Value.ToString() == "WALUTA"))
-                    {
-                        throw new Exception("Bledne pliki");
-                    }
-                }
+                //if (schema == Const.EROTRANS_SCHEMA)
+                //{
+                //    if (!(myWorksheet.Cells["A1"].Value.ToString() == "WARTOŚĆ" && myWorksheet.Cells["B1"].Value.ToString() == "WALUTA"))
+                //    {
+                //        throw new Exception("Bledne pliki");
+                //    }
+                //}
 
-
+                string category = "";
+                int categoryId = 0;
                 for (int rowNum = 2; rowNum < totalRows; rowNum++)
                 {
                     try
                     {
-                        model.Add(new TransOrderModel
+
+                        string testColumn = myWorksheet.Cells[rowNum, 1].Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault();
+                        if (testColumn.Length == 0)
                         {
-                            SenderEmployee = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "SenderEmployee").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
+                            category = myWorksheet.Cells[rowNum, columns.Where(x => x.ColumnTitle == "CategoryId").FirstOrDefault().ColumnId]
+                                .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault();
 
-                            PostingDate = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "PostingDate").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault().Substring(0, 10),
+                            model.Add(new ProductModel { PrimaryCategory = new CategoryModel { Name = category } });
+                            categoryId++;
+                        }
+                        else
+                        {
+                            model.Add(new ProductModel
+                            {
+                                ItemId = myWorksheet.Cells[rowNum, columns.Where(x => x.ColumnTitle == "ItemId").FirstOrDefault().ColumnId]
+                                .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
 
-                            LetterNumber = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "LetterNumber").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
+                                Name = myWorksheet.Cells[rowNum, columns.Where(x => x.ColumnTitle == "ItemName").FirstOrDefault().ColumnId]
+                                .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
 
-                            OrginalLetter = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "OrginalLetter").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
+                                PriceGross = double.Parse(myWorksheet.Cells[rowNum, columns.Where(x => x.ColumnTitle == "PriceGross").FirstOrDefault().ColumnId]
+                                .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault()),
 
-                            Amount = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "Amount").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
-
-                            PKNumber = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "PKNumber").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
-
-                            CustomerName = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "CustomerName").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
-
-                            CustomerStreet = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "CustomerStreet").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
-
-                            CustomerCity = myWorksheet.Cells[rowNum, columnsId.Where(x => x.ColumnName == "CustomerCity").FirstOrDefault().ColumnId]
-                            .Select(c => c.Value == null ? string.Empty : c.Value.ToString()).FirstOrDefault(),
-                        });
+                                PrimaryCategory = new CategoryModel { Id = categoryId, Code = category, Name = category }
+                            });
+                        }
                     }
                     catch
                     {
-                        int h = 1;
+
                     }
                 }
-            }
-
-            //model.RemoveAll(x => (x.OrginalLetter == null || x.OrginalLetter.Length < 4));
-
-            for (int i = 0; i < model.Count; i++)
-            {
-                model[i].Id = i + 1;
             }
 
             return model;

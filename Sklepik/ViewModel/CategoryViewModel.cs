@@ -79,7 +79,15 @@ namespace Sklepik.ViewModel
                 }
                 else
                 {
-                    _categoryRepository.DeleteCategory(updated);
+                    try
+                    {
+                        _categoryRepository.DeleteCategory(updated);
+                    }
+                    catch(Exception ex)
+                    {
+                        #warning Pobrac MessageBox z CPEm
+                        //_modalService.Show<MessageBox>
+                    }
                 }
 
                 CategoryList = new List<CategoryModel>(_categoryRepository.GetAll());
