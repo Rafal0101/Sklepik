@@ -35,5 +35,7 @@ namespace Sklepik.Model
                  return Math.Round((Quantity * PriceGross), 2);
             }
         }
+
+        public bool IsVisible { get; set; } = true;
     }
 }

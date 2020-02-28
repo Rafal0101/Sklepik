@@ -12,7 +12,6 @@ namespace Sklepik.Pages.UserPages
         [Inject]
         public UserOrderViewModel _userOrderViewModel { get; set; }
 
-       
         protected override void OnInitialized()
         {
             _userOrderViewModel.PropertyChanged += (obj, args) => StateHasChanged();

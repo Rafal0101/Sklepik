@@ -3,35 +3,36 @@
 <h3>Zawartość Twojego koszyka</h3>
 
 <div>
-    <MatTable Items="@_userCartViewModel.ItemsInCart"
-              LoadInitialData="true"
-              Striped="true"
-              FilterByColumnName="ItemId"
-              AllowSelection="true"
-              DebounceMilliseconds="50" PageSize="25" Style="width:100%">
-        <MatTableHeader>
-            <th>Kategoria</th>
-            <th>Kod</th>
-            <th>Nazwa</th>
-            <th width="20%">Ilość</th>
-            <th>Cena Brutto</th>
-            <th>Wartość Brutto</th>
-            <th>Rezygnacja</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.CategoryName</td>
-            <td>@context.ItemId</td>
-            <td>@context.ItemName</td>
-            <td><MatNumericUpDownField Label="Ustaw ilość" @bind-Value="@context.Quantity"/></td>
-            @*<td><MatNumericUpDownField Label="Ustaw ilość" @bind-Value="@context.Quantity" @onkeydown="@(() => _myCartViewModel.RecalculateOrder())" /></td>*@
-            <td>@String.Format("{0:f2} zł", @context.PriceGross)</td>
-            <td>@String.Format("{0:f2} zł", @context.ValueGross)</td>
-            <td><MatButton Raised="true" Icon="@MatIconNames.Delete" OnClick="@(() => _userCartViewModel.RemoveFromCart(context))" Style="background-color: red"></MatButton></td>
-        </MatTableRow>
-    </MatTable>
-
+    <table class="blueTable">
+        <thead>
+            <tr>
+                <th>Kategoria</th>
+                <th>Kod</th>
+                <th>Nazwa</th>
+                <th>Ilość</th>
+                <th>Cena Brutto</th>
+                <th>Wartość Brutto</th>
+                <th>Rezygnacja</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in _userCartViewModel.ItemsInCart)
+            {
+            <tr>
+                <td>item.CategoryName</td>
+                <td>@item.ItemId</td>
+                <td>@item.ItemName</td>
+                <td><input type="number" @bind-value="@item.Quantity" data-decimals="0" min="1" max="999" step="1" /></td>
+                <td>@String.Format("{0:f2} zł", item.PriceGross)</td>
+                <td>@String.Format("{0:f2} zł", item.ValueGross)</td>
+                <td><a class="btn btn-danger btn-sm text-white" @onclick="@(() => _userCartViewModel.RemoveFromCart(item))">Usuń</a></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <p></p>
     <p>
-        <MatTextField @bind-Value="@_userCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true" ></MatTextField>
+        <MatTextField @bind-Value="@_userCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true"></MatTextField>
     </p>
     <p>
         <div class="form-group">

@@ -1,29 +1,37 @@
 ﻿@page "/myorder"
 
 <h1>Wybierz towary do koszyka</h1>
+<p>
+    <label style="margin-left: 100px;">Wyszukaj: </label>
+    <input @bind-value="_userOrderViewModel.SearchingPattern" @bind-value:event="oninput" />
+</p>
 
-<div>
-    <MatTable Items="@_userOrderViewModel.ProductList"
-              LoadInitialData="true"
-              Striped="true"
-              FilterByColumnName="ItemId"
-              AllowSelection="true"
-              DebounceMilliseconds="50" PageSize="25" Style="width:100%">
-        <MatTableHeader>
+<table class="blueTable">
+    <thead>
+        <tr>
             <th>Kategoria</th>
             <th>Kod</th>
             <th>Nazwa</th>
             <th>Cena Brutto</th>
             <th>Do Koszyka</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.CategoryName</td>
-            <td>@context.ItemId</td>
-            <td>@context.ItemName</td>
-            <td>@context.PriceGross</td>
-            <td><MatSlideToggle @bind-Value="@context.IsInCart"></MatSlideToggle></td>
-        </MatTableRow>
-    </MatTable>
-</div>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in _userOrderViewModel.ProductList)
+        {
+            @if (item.IsVisible)
+            {
+                <tr>
+                    <td style="font-size: 8px; font-weight:bold;">@item.CategoryName</td>
+                    <td>@item.ItemId</td>
+                    <td>@item.ItemName</td>
+                    <td>@item.PriceGross</td>
+                    <td>
+                        <MatCheckbox @bind-Value="item.IsInCart"></MatCheckbox>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
 
-@*@onclick="@(() => _myOrderViewModel.AddToCart(context))"*@

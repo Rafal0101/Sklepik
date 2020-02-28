@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Model;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Sklepik.Model;
 using System;
@@ -17,17 +18,20 @@ namespace Sklepik.ViewModel
         private readonly UserOrderHeaderModel _userOrderHeaderModel;
         private readonly IOrderRepository _orderRepository;
         private readonly AuthenticationStateProvider _authenticationStateProvider;
+        private readonly NavigationManager _navigationManager;
 
-        public UserCartViewModel(UserOrderHeaderModel userOrderHeaderModel, IOrderRepository orderRepository, AuthenticationStateProvider authenticationStateProvider)
+        public UserCartViewModel(UserOrderHeaderModel userOrderHeaderModel
+            ,IOrderRepository orderRepository
+            ,AuthenticationStateProvider authenticationStateProvider
+            ,NavigationManager navigationManager)
         {
             _userOrderHeaderModel = userOrderHeaderModel;
             _orderRepository = orderRepository;
             _authenticationStateProvider = authenticationStateProvider;
+            _navigationManager = navigationManager;
+
             ItemsInCart = new TrulyObservableCollection<UserOrderLineModel>(_userOrderHeaderModel.AvailableItems.Where(x => x.IsInCart == true).ToList());
-
-            
             RecalculateOrder();
-
             ItemsInCart.CollectionChanged += ItemsInCart_CollectionChanged;
         }
 
@@ -108,6 +112,7 @@ namespace Sklepik.ViewModel
             {
                 ClearDataAfterOrder();
             }
+            _navigationManager.NavigateTo("\\mycurrentorders");
         }
 
         #endregion

@@ -12,7 +12,7 @@
                                 <td><small><small>Zamówienie nr:</small></small></td>
                                 <td><small><small>@UserOrder.Id</small></small></td>
                                 <td>
-                                    <button class="btn btn-danger  float-sm-right" disabled ="@UserOrder.CanBeDeleted"
+                                    <button class="btn btn-danger  float-sm-right" disabled="@UserOrder.CanBeDeleted"
                                             @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
                                         Usuń całe zamówienie
                                     </button>
@@ -34,35 +34,31 @@
                     </table>
 
                 </h5>
-                @*<h5 class="card-header">
-                        Zamówienie nr: @MyOrder.Id
-                        <button class="btn btn-danger float-sm-right"
-                                @onclick="@(() => OnClickDel.InvokeAsync(MyOrder))"
-                                >Usuń całe zamówienie</button>
-                        <div><label>Status:</label><label style="margin-left: 10px;">@MyOrder.StatusFormatted</label></div>
-                        <div><label>Data złożenia:</label><label style="margin-left: 10px;">@MyOrder.CreationDateFormatted</label></div>
-                        <div><label>Wartość:</label><label style="margin-left: 10px;">@MyOrder.SummaryValue</label></div>
-                    </h5>*@
+           
                 <div class="card-body">
-                    <MatTable Items="@UserOrder.AvailableItems"
-                              LoadInitialData="true"
-                              ShowPaging="false"
-                              ShowFooter="false"
-                              Striped="true"
-                              DebounceMilliseconds="50">
-                        <MatTableHeader>
-                            <th>Kod</th>
-                            <th>Nazwa</th>
-                            <th>Ilość</th>
-                            <th>Cena</th>
-                        </MatTableHeader>
-                        <MatTableRow>
-                            <td>@context.ItemId</td>
-                            <td width="60%">@context.ItemName</td>
-                            <td>@context.Quantity</td>
-                            <td>@context.PriceGross</td>
-                        </MatTableRow>
-                    </MatTable>
+
+                    <table class="blueTable">
+                        <thead>
+                            <tr>
+                                <th>Kod</th>
+                                <th>Nazwa</th>
+                                <th>Ilość</th>
+                                <th>Cena</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in @UserOrder.AvailableItems)
+                            {
+                                <tr>
+                                    <td>@item.ItemId</td>
+                                    <td width="60%">@item.ItemName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.PriceGross</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
                 </div>
                 <div class="card-footer text-muted">@UserOrder.Notification</div>
             </div>

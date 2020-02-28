@@ -52,34 +52,30 @@ namespace Sklepik.ViewModel
         }
 
         public List<UserOrderLineModel> ProductList { get; set; }
-  
+
+        private string _searchingPattern;
+        public string SearchingPattern
+        {
+            get { return _searchingPattern; }
+            set 
+            { 
+                _searchingPattern = value;
+                NotifyPropertyChanged(nameof(SearchingPattern));
+                for (int i = 0; i < ProductList.Count; i++)
+                {
+                    if (!ProductList[i].ItemId.ToLower().Contains(_searchingPattern.ToLower()) 
+                        && !ProductList[i].ItemName.ToLower().Contains(_searchingPattern.ToLower()))
+                    {
+                        ProductList[i].IsVisible = false;
+                    }
+                    else
+                    {
+                        ProductList[i].IsVisible = true;
+                    }
+                }
+            }
+        }
 
     }
 }
 
-
-/*
-         //private readonly IPurchaseRepository _purchaseRepository;
-        //private readonly AuthenticationStateProvider _authenticationStateProvider;
-
-
-
-
-
-                //MyPurchases.PurchaseItems.Add(new MyPurchaseModel 
-            //{ CategoryName = product.CategoryName,
-            //ItemId = product.ItemId,
-            //Name = product.Name,
-            //PriceGross = product.PriceGross,
-            //Quantity = 1,
-            //IsInCart = product.IsInCart
-            //});
-
-
-
-
-            //var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            //string user = authState.User.Identity.Name;
-
-            //int test = _purchaseRepository.SavePurchaseHeader(user, 10);
-     * */
