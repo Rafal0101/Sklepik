@@ -3,7 +3,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Domain;
 using Domain.Model;
-using Domain.States;
+using Domain.Statuses;
 using Sklepik.Model;
 using Sklepik.Pages.Forms;
 using System;
@@ -32,7 +32,7 @@ namespace Sklepik.ViewModel
 
         private void LoadSummaryOrdersList()
         {
-            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
             SummaryOrdersList = _orderRepository.OrderHeadersInStatusGet(statuses);
         }
 
@@ -64,7 +64,7 @@ namespace Sklepik.ViewModel
             });
             IMapper iMapper = config.CreateMapper();
 
-            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
             SellerOrdersList = iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, buyerId));
             //OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(buyerId, OrderStatus.InReview)));
             //OrdersList.ForEach(x => { x.AvailableItems.ForEach(y => { y.NewQuantity = y.Quantity; }); });
@@ -76,7 +76,7 @@ namespace Sklepik.ViewModel
 
 
 
-        internal void UpdateUserOrdersStatus(string buyerId, OrderStatus submitted, OrderStatus inReview)
+        internal void UpdateUserOrdersStatus(string buyerId, StatusEnum submitted, StatusEnum inReview)
         {
             _orderRepository.ChangeUserOrdersStatus(buyerId, submitted, inReview);
         }

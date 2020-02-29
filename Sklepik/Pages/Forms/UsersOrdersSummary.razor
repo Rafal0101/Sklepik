@@ -1,5 +1,5 @@
 ﻿@using Domain.Model
-<table class="minimalistBlack">
+<table class="table">
     <thead>
         <tr>
             <th>Użytkownik</th>
@@ -11,15 +11,13 @@
     <tbody>
         @foreach (var item in SummaryModel)
         {
-            <tr>
+        <tr>
 
-                <td>@item.BuyerId</td>
-                <td>@item.Qty</td>
-                <td>@item.SummaryValueFormatted</td>
-                <td><button type="button" class="btn btn-primary btn-sm" @onclick="@(() => OnClickEdit.InvokeAsync(item.BuyerId))">
-                        <i><MatIcon Icon="@MatIconNames.Edit" Style="height: 16px;"></MatIcon></i>
-                    </button></td>
-            </tr>
+            <td>@item.BuyerId</td>
+            <td>@item.Qty</td>
+            <td>@item.SummaryValueFormatted</td>
+            <td align="center"><button class="btn btn-primary btn-sm text-white" @onclick="@(() => OnClickEdit.InvokeAsync(item.BuyerId))">Edytuj</button></td>
+        </tr>
 
         }
     </tbody>

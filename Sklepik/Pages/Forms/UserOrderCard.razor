@@ -12,7 +12,7 @@
                                 <td><small><small>Zamówienie nr:</small></small></td>
                                 <td><small><small>@UserOrder.Id</small></small></td>
                                 <td>
-                                    <button class="btn btn-danger  float-sm-right" disabled="@UserOrder.CanBeDeleted"
+                                    <button class="btn btn-danger float-sm-right" disabled="@UserOrder.CanBeDeleted" 
                                             @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
                                         Usuń całe zamówienie
                                     </button>
@@ -20,7 +20,7 @@
                             </tr>
                             <tr>
                                 <td><small>Status:</small></td>
-                                <td><small>@UserOrder.StatusFormatted</small></td>
+                                <td><small>@UserOrder.StatusName</small></td>
                             </tr>
                             <tr>
                                 <td><small>Data złożenia:</small></td>
@@ -60,7 +60,7 @@
                     </table>
 
                 </div>
-                <div class="card-footer text-muted">@UserOrder.Notification</div>
+                <div class="card-footer text-muted">@UserOrder.BuyerNotification</div>
             </div>
             <br />
         </div>

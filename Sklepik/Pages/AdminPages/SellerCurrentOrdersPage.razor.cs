@@ -1,4 +1,4 @@
-﻿using Domain.States;
+﻿using Domain.Statuses;
 using Microsoft.AspNetCore.Components;
 using Sklepik.Model;
 using Sklepik.ViewModel;
@@ -23,17 +23,31 @@ namespace Sklepik.Pages.AdminPages
         public void ClickEdit(string buyerId)
         {
             InEditUserOrdersMode = true;
-            _sellerCurrentOrderViewModel.UpdateUserOrdersStatus(buyerId, OrderStatus.Submitted, OrderStatus.InReview);
+            _sellerCurrentOrderViewModel.UpdateUserOrdersStatus(buyerId, StatusEnum.Submitted, StatusEnum.InReview);
             _sellerCurrentOrderViewModel.LoadOrdersList(buyerId);
         }
-        void ClickDel(SellerOrderHeaderModel sellerOrderHeaderModel)
-        {
-            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
-        }
-
         void ClickDelOrderPosition(SellerOrderLineModel sellerOrderLineModel)
         {
             _sellerCurrentOrderViewModel.DeleteOrderPosition(sellerOrderLineModel);
         }
+
+        void RejectOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
+        {
+            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+        }
+        void AcceptOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
+        {
+            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+        }
+        void PayedOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
+        {
+            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+        }
+        void DeliveredOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
+        {
+            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+        }
+
+
     }
 }

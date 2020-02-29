@@ -3,7 +3,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Domain;
 using Domain.Model;
-using Domain.States;
+using Domain.Statuses;
 using Microsoft.AspNetCore.Components.Authorization;
 using Sklepik.Model;
 using Sklepik.Pages.Forms;
@@ -42,7 +42,7 @@ namespace Sklepik.ViewModel
             });
             IMapper iMapper = config.CreateMapper();
 
-            OrderStatus[] statuses = new OrderStatus[] { OrderStatus.Submitted, OrderStatus.InReview };
+            StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
             OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<UserOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, user));
         }
 

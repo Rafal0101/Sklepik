@@ -106,6 +106,7 @@ namespace Sklepik.ViewModel
             }
             catch
             {
+                Console.WriteLine("Save order failed");
                 new Exception("Save order failed");
             }
             finally

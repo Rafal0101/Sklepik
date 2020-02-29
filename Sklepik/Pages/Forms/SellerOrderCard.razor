@@ -5,22 +5,21 @@
         <div class="col-md-12 jobs_index_middle_panels">
             <div class="card bg-light">
                 <h5 class="card-header">
-                    <table style="text-align: left; width: 100%;"
-                           border="0" cellpadding="0" cellspacing="0">
+                    <table style="text-align: left; width: 100%; font-size:16px; font-weight:bold">
                         <tbody>
                             <tr>
-                                <td style="width: 10px;">Zamówienie nr:</td>
-                                <td style="width: 20%;">@SellerOrder.Id</td>
+                                <td style="width: 15px;">Zamówienie nr:</td>
+                                <td style="width: 15%;">@SellerOrder.Id</td>
                                 <td style="width: 5%;"></td>
-                                <td style="width: 10%;">Status:</td>
-                                <td style="width: 20%;">@SellerOrder.StatusFormatted</td>
+                                <td style="width: 15%;">Status:</td>
+                                <td style="width: 15%;">@SellerOrder.StatusName</td>
                                 <td style="width: 5%;"></td>
                                 <td colspan="1" rowspan="2" style="width: 30%;">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text">Info</span>
+                                            <span class="input-group-text">Info klienta</span>
                                         </div>
-                                        <textarea class="form-control" rows="3" @bind="@SellerOrder.Notification" readonly="readonly"></textarea>
+                                        <textarea class="form-control" rows="3" @bind="@SellerOrder.BuyerNotification" readonly="readonly"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -36,7 +35,7 @@
                     </table>
                 </h5>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="blueTable">
                         <thead>
                             <tr>
                                 <th>Kod</th>
@@ -46,77 +45,82 @@
                                 <th>Cena</th>
                                 <th>Nowa Cena</th>
                                 <th>
-                                    <button class="btn btn-danger float-sm-right"
-                                            @onclick="@(() => OnClickDel.InvokeAsync(SellerOrder))">
-                                        Usuń zamówienie
-                                    </button>
+                                    Usuwanie
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in SellerOrder.Items)
                             {
-                            <tr>
-                                <td>@item.ItemId</td>
-                                <td width="40%">@item.ItemName</td>
-                                <td>@item.Quantity</td>
-                                <td><input type="number" @bind-value="@item.NewQuantity" data-decimals="0" min="1" max="@item.Quantity" step="1" /></td>
-                                <td>@item.PriceGross</td>
-                                <td>@item.NewValueGross</td>
-                                <td><button class="btn btn-danger btn-sm float-sm-right"
-                                        @onclick="@(() => OnClickDelOrderPosition.InvokeAsync(item))">
-                                    <span class="oi oi-delete"></span>
-                                    Usuń
-                                </button></td>
-                            </tr>
+                                <tr>
+                                    <td>@item.ItemId</td>
+                                    <td width="40%">@item.ItemName</td>
+                                    <td>@item.Quantity</td>
+                                    <td><input type="number" @bind-value="@item.NewQuantity" data-decimals="0" min="1" max="@item.Quantity" step="1" /></td>
+                                    <td>@item.PriceGross</td>
+                                    <td>@item.NewValueGross</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm float-sm-right"
+                                                @onclick="@(() => OnClickDelOrderPosition.InvokeAsync(item))">
+                                            Usuń
+                                        </button>
+                                    </td>
+                                </tr>
 
                             }
                         </tbody>
                     </table>
-                    @*<MatTable Items="@SellerOrder.Items"
-                              LoadInitialData="true"
-                              ShowPaging="false"
-                              ShowFooter="false"
-                              Striped="true"
-                              DebounceMilliseconds="50">
-                        <MatTableHeader>
-                            <th>Kod</th>
-                            <th>Nazwa</th>
-                            <th>Ilość zamówiona</th>
-                            <th>Ilość realizowana</th>
-                            <th>Cena</th>
-                            <th>Nowa Cena</th>
-                            <th>
-                                <button class="btn btn-danger float-sm-right"
-                                        @onclick="@(() => OnClickDel.InvokeAsync(SellerOrder))">
-                                    Usuń zamówienie
-                                </button>
-                            </th>
-                        </MatTableHeader>
-                        <MatTableRow>
-                            <td>@context.ItemId</td>
-                            <td width="40%">@context.ItemName</td>
-                            <td>@context.Quantity</td>
-                            <td><input type="number" @bind-value="@context.NewQuantity" data-decimals="0" min="1" max="@context.Quantity" step="1" /></td>
-                            <td>@context.PriceGross</td>
-                            <td>@context.NewValueGross</td>
-                            <button class="btn btn-danger btn-sm float-sm-right"
-                                    @onclick="@(() => OnClickDelOrderPosition.InvokeAsync(context))">
-                                <span class="oi oi-delete"></span>
-                                Usuń
-                            </button>
-                        </MatTableRow>
-                    </MatTable>*@
+
                 </div>
                 <div class="card-footer text-muted">
-                    <div class="input-group">
-                        <textarea class="form-control" rows="3" @bind="@SellerOrder.Notification"></textarea> 
-                        <button class="btn btn-primary btn-sm float-sm-right">
-                            <span class="oi oi-power-standby"></span>
-                            Zaproś klienta po odbiór
-                        </button>
-                    </div>
-                   
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <td style="width: 60%;">Informacja dla klienta:</td>
+                                <td style="width: 10%;"
+                                    colspan="1" rowspan="4"></td>
+                                <td style="width: 30%;">
+                                    <button class="btn btn-danger btn-sm btn-block"
+                                            @onclick="@(() => OnRejectOrder.InvokeAsync(SellerOrder))">
+                                        <span class="oi oi-share"></span>
+                                        Odrzuć całe zamówienie
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1" rowspan="3">
+                                    <textarea class="form-control" rows="2" @bind="@SellerOrder.SellerNotification"></textarea>
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-block"
+                                            @onclick="@(() => OnAcceptOrder.InvokeAsync(SellerOrder))">
+                                        <span class="oi oi-share"></span>
+                                        Akceptuj i zaproś klienta
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-block"
+                                            @onclick="@(() => OnPayedOrder.InvokeAsync(SellerOrder))">
+                                        <span class="oi oi-share"></span>
+                                        Zamówienie zostało opłacone
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-block"
+                                            @onclick="@(() => OnDeliveredOrder.InvokeAsync(SellerOrder))">
+                                        <span class="oi oi-share"></span>
+                                        Zamówienie zostało wydane
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
                 </div>
             </div>
             <br />
@@ -128,7 +132,13 @@
     [Parameter]
     public SellerOrderHeaderModel SellerOrder { get; set; }
     [Parameter]
-    public EventCallback<SellerOrderHeaderModel> OnClickDel { get; set; }
+    public EventCallback<SellerOrderHeaderModel> OnRejectOrder { get; set; }
+    [Parameter]
+    public EventCallback<SellerOrderHeaderModel> OnAcceptOrder { get; set; }
+    [Parameter]
+    public EventCallback<SellerOrderHeaderModel> OnPayedOrder { get; set; }
+    [Parameter]
+    public EventCallback<SellerOrderHeaderModel> OnDeliveredOrder { get; set; }
     [Parameter]
     public EventCallback<SellerOrderLineModel> OnClickDelOrderPosition { get; set; }
 

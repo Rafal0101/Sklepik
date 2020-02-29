@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Domain;
 using Domain.Model;
-using Domain.States;
+using Domain.Statuses;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,7 +20,7 @@ namespace DataAccess
             _sqlDataAccess = sqlDataAccess;
         }
 
-        public void SaveOrder(string buyer, string notification, double summaryOrderValue, List<OrderLineModelDto> list)
+        public void SaveOrder(string buyer, string buyerNotification, double summaryOrderValue, List<OrderLineModelDto> list)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
@@ -28,12 +28,15 @@ namespace DataAccess
                 using (var transaction = cnn.BeginTransaction())
                 {
 
-                    string sqlHeader = $"INSERT INTO OrderHeader (BuyerId, Status, Notification, SummaryValue) " +
-                        $"VALUES (@BuyerId, @Status, @Notification, @SummaryValue);" +
+                    string sqlHeader = $"INSERT INTO OrderHeader (Number, BuyerId, Status, BuyerNotification, SummaryValue) " +
+                        $"VALUES ((select dbo.GetOrderNumber()), @BuyerId, @Status, @BuyerNotification, @SummaryValue);" +
                         $"SELECT CAST(SCOPE_IDENTITY() as int)";
 
                     var result = cnn.ExecuteScalar(sqlHeader,
-                        new { BuyerId = buyer, Status = OrderStatusDictionary.GetStatus[OrderStatus.Submitted], Notification = notification, SummaryValue = summaryOrderValue },
+                        new { BuyerId = buyer
+                        , Status = Const.StatusesList.Where(x => x.Status == StatusEnum.Submitted).FirstOrDefault().StatusId
+                        , BuyerNotification = buyerNotification
+                        , SummaryValue = summaryOrderValue },
                         transaction: transaction);
 
                     int OrderHeaderId = Convert.ToInt32(result);
@@ -54,15 +57,20 @@ namespace DataAccess
         }
 
 
-        public List<OrderHeaderModelDto> GetUserOrderList(OrderStatus[] statuses, string buyer = null, string seller = null, int id = 0)
+        public List<OrderHeaderModelDto> GetUserOrderList(StatusEnum[] statuses, string buyer = null, string seller = null, int id = 0)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
                 List<OrderHeaderModelDto> headers = new List<OrderHeaderModelDto>();
                 foreach (var status in statuses)
                 {
+                    //int testStatus = Const.StatusesList.Where(x => x.Status == StatusEnum.Submitted).FirstOrDefault().StatusId;
+
                     headers.AddRange(cnn.Query<OrderHeaderModelDto>("dbo.OrderHeaderGet"
-                        , param: new { BuyerId = buyer, Status = OrderStatusDictionary.GetStatus[status], SellerId = seller, Id = id }
+                        , param: new { BuyerId = buyer
+                        , Status = Const.StatusesList.Where(x => x.Status == status).FirstOrDefault().StatusId
+                        , SellerId = seller
+                        , Id = id }
                         , commandType: CommandType.StoredProcedure).ToList());
 
                     foreach (var item in headers)
@@ -76,7 +84,7 @@ namespace DataAccess
             }
         }
 
-        public List<OrderSummaryModel> OrderHeadersInStatusGet(OrderStatus[] statuses)
+        public List<OrderSummaryModel> OrderHeadersInStatusGet(StatusEnum[] statuses)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
@@ -88,7 +96,7 @@ namespace DataAccess
                     {
                         sql += " OR ";
                     }
-                    sql += $"Status = {OrderStatusDictionary.GetStatus[statuses[i]]}";
+                    sql += $"Status = {Const.StatusesList.Where(x => x.Status == statuses[i]).FirstOrDefault().StatusId}";
                 }
                 sql += " GROUP BY BuyerId";
 
@@ -98,12 +106,12 @@ namespace DataAccess
             }
         }
 
-        public void ChangeUserOrdersStatus(string BuyerId, OrderStatus fromStatus, OrderStatus intoStatus)
+        public void ChangeUserOrdersStatus(string BuyerId, StatusEnum fromStatus, StatusEnum intoStatus)
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
-                string sql = $"UPDATE [dbo].[OrderHeader] SET Status = {OrderStatusDictionary.GetStatus[intoStatus]} " +
-                    $"WHERE BuyerId = '{BuyerId}' AND Status = {OrderStatusDictionary.GetStatus[fromStatus]}";
+                string sql = $"UPDATE [dbo].[OrderHeader] SET Status = {Const.StatusesList.Where(x => x.Status == intoStatus).FirstOrDefault().StatusId} " +
+                    $"WHERE BuyerId = '{BuyerId}' AND Status = {Const.StatusesList.Where(x => x.Status == fromStatus).FirstOrDefault().StatusId}";
 
                 cnn.Execute(sql);
             }

@@ -13,9 +13,28 @@ else
     }
     else
     {
-        @foreach (var header in _sellerCurrentOrderViewModel.SellerOrdersList)
-        {
-            <Sklepik.Pages.Forms.SellerOrderCard SellerOrder="header" OnClickDel="ClickDel" OnClickDelOrderPosition ="ClickDelOrderPosition"/>
-        }
+        <h2>Zamówienia użytkownika: </h2>
+        <p>
+            <button class="btn btn-primary">Powrót do listy wszystkich zamówień</button>
+        </p>
+        <table>
+            <tbody>
+                @foreach (var header in _sellerCurrentOrderViewModel.SellerOrdersList)
+                {
+                    <tr>
+                        <td>
+                            <Sklepik.Pages.Forms.SellerOrderCard 
+                                                                 SellerOrder="header" 
+                                                                 OnClickDelOrderPosition="ClickDelOrderPosition"
+                                                                 OnRejectOrder="RejectOrder" 
+                                                                 OnAcceptOrder="AcceptOrder"
+                                                                 OnPayedOrder="PayedOrder"
+                                                                 OnDeliveredOrder="DeliveredOrder"
+                                                                 />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 }

@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.States
+namespace Domain.Statuses
 {
-    public enum OrderStatus
+    public class OrderStatus
     {
-        All,
-        Submitted,
-        InReview,
-        Accepted,
-        Rejected
+        public StatusEnum Status { get; set; }
+        public int StatusId { get; set; }
+        public string StatusName { get; set; }
     }
 }

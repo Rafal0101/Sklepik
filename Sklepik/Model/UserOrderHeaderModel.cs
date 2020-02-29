@@ -1,6 +1,7 @@
 ﻿using AutoMapper.Configuration.Annotations;
+using Domain;
 using Domain.Model;
-using Domain.States;
+using Domain.Statuses;
 using Sklepik.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,11 @@ namespace Sklepik.Model
     {
 
         public int Id { get; set; }
-        private string _buyerId;
 
+        public string Number { get; set; }
+
+
+        private string _buyerId;
         public string BuyerId
         {
             get { return _buyerId; }
@@ -27,7 +31,8 @@ namespace Sklepik.Model
 
         public string SellerId { get; set; }
         public int Status { get; set; }
-        public string Notification { get; set; }
+        public string BuyerNotification { get; set; }
+        public string SellerNotification { get; set; }
         public double SummaryValue { get; set; }
         public string MergedId { get; set; }
         public DateTime CreationDate { get; set; }
@@ -41,28 +46,11 @@ namespace Sklepik.Model
             set { }
         }
 
-        public string StatusFormatted
+        public string StatusName
         {
             get
             {
-                string result = string.Empty;
-
-                switch(OrderStatusDictionary.GetStatus.FirstOrDefault(x => x.Value == Status).Key)
-                {
-                    case OrderStatus.Submitted:
-                        result = "10 - Złożone";
-                        break;
-                    case OrderStatus.InReview:
-                        result = "20 - W weryfikacji";
-                        break;
-                    case OrderStatus.Accepted:
-                        result = "30 - Zaakceptowane";
-                        break;
-                    case OrderStatus.Rejected:
-                        result = "40 - Odrzucone";
-                        break;
-                }
-                return result;
+                return Const.StatusesList.Where(x => x.StatusId == Status).FirstOrDefault().StatusName;
             }
         }
 
@@ -84,9 +72,9 @@ namespace Sklepik.Model
             {
                 bool result = false;
 
-                switch (OrderStatusDictionary.GetStatus.FirstOrDefault(x => x.Value == Status).Key)
+                switch (Const.StatusesList.Where(x => x.StatusId == Status).FirstOrDefault().Status)
                 { 
-                    case OrderStatus.InReview:
+                    case StatusEnum.InReview:
                         result = true;
                         break;
                     default:

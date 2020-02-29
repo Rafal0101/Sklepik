@@ -1,4 +1,5 @@
-﻿using Domain.States;
+﻿using Domain;
+using Domain.Statuses;
 using Sklepik.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,12 @@ namespace Sklepik.Model
         }
 
         public int Id { get; set; }
+        public string Number { get; set; }
         public string BuyerId { get; set; }
         public string SellerId { get; set; }
         public int Status { get; set; }
-        public string Notification { get; set; }
+        public string BuyerNotification { get; set; }
+        public string SellerNotification { get; set; }
 
         private double _summaryValue;
 
@@ -44,28 +47,11 @@ namespace Sklepik.Model
             set { }
         }
 
-        public string StatusFormatted
+        public string StatusName
         {
             get
             {
-                string result = string.Empty;
-
-                switch (OrderStatusDictionary.GetStatus.FirstOrDefault(x => x.Value == Status).Key)
-                {
-                    case OrderStatus.Submitted:
-                        result = "10 - Złożone";
-                        break;
-                    case OrderStatus.InReview:
-                        result = "20 - W weryfikacji";
-                        break;
-                    case OrderStatus.Accepted:
-                        result = "30 - Zaakceptowane";
-                        break;
-                    case OrderStatus.Rejected:
-                        result = "40 - Odrzucone";
-                        break;
-                }
-                return result;
+                return Const.StatusesList.Where(x => x.StatusId == Status).FirstOrDefault().StatusName;
             }
         }
 
