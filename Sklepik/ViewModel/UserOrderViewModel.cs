@@ -42,7 +42,7 @@ namespace Sklepik.ViewModel
                         PriceNet = item.PriceNet,
                         PriceGross = item.PriceGross,
                         Tax = item.Tax,
-                        Quantity = 1,
+                        SubmittedQty = 1,
                         IsInCart = false
                     });
                 }

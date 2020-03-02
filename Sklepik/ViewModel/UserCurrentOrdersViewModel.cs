@@ -42,7 +42,7 @@ namespace Sklepik.ViewModel
             });
             IMapper iMapper = config.CreateMapper();
 
-            StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
+            StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview, StatusEnum.Rejected, StatusEnum.Accepted };
             OrdersList = iMapper.Map<List<OrderHeaderModelDto>, List<UserOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, user));
         }
 

@@ -11,12 +11,10 @@ namespace Domain
         {
             new OrderStatus { Status = StatusEnum.Submitted, StatusId = 10, StatusName = "10 - Złożone" },
             new OrderStatus { Status = StatusEnum.InReview, StatusId = 20, StatusName  = "20 - W weryfikacji" },
-            new OrderStatus { Status = StatusEnum.Rejected, StatusId = 30, StatusName  = "30 - Odrzucone" },
-            new OrderStatus { Status = StatusEnum.PartiallyAccepted, StatusId = 40, StatusName = "40 - Zaakceptowane częściowo" },
-            new OrderStatus { Status = StatusEnum.Accepted, StatusId = 50, StatusName  = "50 - Zaakceptowane" },
-            new OrderStatus { Status = StatusEnum.Paid, StatusId = 60, StatusName  = "60 - Opłacone" },
-            new OrderStatus { Status = StatusEnum.Delivered, StatusId = 70, StatusName  = "60 - Dostarczone" }
-
+            new OrderStatus { Status = StatusEnum.Accepted, StatusId = 30, StatusName  = "30 - Zaakceptowane" },
+            new OrderStatus { Status = StatusEnum.Paid, StatusId = 40, StatusName  = "40 - Opłacone" },
+            new OrderStatus { Status = StatusEnum.Delivered, StatusId = 50, StatusName  = "50 - Dostarczone" },
+            new OrderStatus { Status = StatusEnum.Rejected, StatusId = 99, StatusName  = "99 - Odrzucone" },
         };
     }
 }

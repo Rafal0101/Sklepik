@@ -22,8 +22,8 @@ namespace Sklepik.Model
         public string BuyerId
         {
             get { return _buyerId; }
-            set 
-            { 
+            set
+            {
                 _buyerId = value;
                 NotifyPropertyChanged(nameof(BuyerId));
             }
@@ -66,6 +66,19 @@ namespace Sklepik.Model
             }
         }
 
+        public string Visibility
+        {
+            get
+            {
+                switch (Const.StatusesList.Where(x => x.StatusId == Status).FirstOrDefault().Status)
+                {
+                    case StatusEnum.Submitted:
+                        return "visible";
+                    default:
+                        return "invisible";
+                }
+            }
+        }
         public bool CanBeDeleted
         {
             get
@@ -73,7 +86,7 @@ namespace Sklepik.Model
                 bool result = false;
 
                 switch (Const.StatusesList.Where(x => x.StatusId == Status).FirstOrDefault().Status)
-                { 
+                {
                     case StatusEnum.InReview:
                         result = true;
                         break;

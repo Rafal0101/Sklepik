@@ -18,13 +18,13 @@ namespace Sklepik.Model
 
 
         private int _quantity;
-        public int Quantity
+        public int SubmittedQty
         {
             get { return _quantity; }
             set
             {
                 _quantity = value;
-                NotifyPropertyChanged(nameof(Quantity));
+                NotifyPropertyChanged(nameof(SubmittedQty));
             }
         }
 
@@ -32,30 +32,30 @@ namespace Sklepik.Model
         {
             get
             {
-                return Math.Round((Quantity * PriceGross), 2);
+                return Math.Round((SubmittedQty * PriceGross), 2);
             }
 
         }
 
-        private int _newQuantity;
-        public int NewQuantity
+        private int _acceptedQty;
+        public int AcceptedQty
         {
-            get { return _newQuantity; }
+            get { return _acceptedQty; }
             set
             {
 
-                _newQuantity = value;
+                _acceptedQty = value;
 
-                if (_newQuantity < 1)
+                if (_acceptedQty < 0)
                 {
-                    _newQuantity = 1;
+                    _acceptedQty = 0;
                 }
-                else if (_newQuantity > Quantity)
+                else if (_acceptedQty > SubmittedQty)
                 {
-                    _newQuantity = Quantity;
+                    _acceptedQty = SubmittedQty;
                 }
 
-                NotifyPropertyChanged(nameof(NewQuantity));
+                NotifyPropertyChanged(nameof(AcceptedQty));
             }
         }
 
@@ -63,7 +63,7 @@ namespace Sklepik.Model
         {
             get
             {
-                return Math.Round((NewQuantity * PriceGross), 2);
+                return Math.Round((AcceptedQty * PriceGross), 2);
             }
         }
     }

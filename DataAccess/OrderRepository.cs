@@ -43,11 +43,11 @@ namespace DataAccess
 
                     foreach (var line in list)
                     {
-                        string sqlLine = $"INSERT INTO OrderLine ([OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [Quantity]) " +
-                                        $"VALUES (@OrderHeaderId, @ItemId, @ItemName, @PriceNet, @PriceGross, @Tax, @Quantity)";
+                        string sqlLine = $"INSERT INTO OrderLine ([OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [SubmittedQty]) " +
+                                        $"VALUES (@OrderHeaderId, @ItemId, @ItemName, @PriceNet, @PriceGross, @Tax, @SubmittedQty)";
 
                         cnn.Execute(sqlLine,
-                            new { OrderHeaderId, line.ItemId, line.ItemName, line.PriceNet, line.PriceGross, line.Tax, line.Quantity },
+                            new { OrderHeaderId, line.ItemId, line.ItemName, line.PriceNet, line.PriceGross, line.Tax, line.SubmittedQty },
                             transaction: transaction);
                     }
 
@@ -75,7 +75,7 @@ namespace DataAccess
 
                     foreach (var item in headers)
                     {
-                        string sql = "SELECT [Id], [OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [Quantity]" +
+                        string sql = "SELECT [Id], [OrderHeaderId], [ItemId], [ItemName], [PriceNet], [PriceGross], [Tax], [SubmittedQty], [AcceptedQty]" +
                             "FROM [Sklepik].[dbo].[OrderLine] WHERE OrderHeaderId = @OrderHeaderId";
                         item.Items = cnn.Query<OrderLineModelDto>(sql, param: new { OrderHeaderId = item.Id }).ToList();
                     }
@@ -105,6 +105,29 @@ namespace DataAccess
                 return headers;
             }
         }
+
+        public void ChangeOrderStatus(OrderHeaderModelDto dtoModel, StatusEnum newStatus)
+        {
+            using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
+            {
+                string sqlHead = $"UPDATE [dbo].[OrderHeader] SET Status = @Status, SummaryValue = @SummaryValue WHERE Id = @Id";
+
+                cnn.Execute(sqlHead, new { Status = Const.StatusesList.Where(x => x.Status == newStatus).FirstOrDefault().StatusId
+                    , dtoModel.SummaryValue, dtoModel.Id});
+
+                if (newStatus == StatusEnum.Accepted)
+                {
+                    foreach (var item in dtoModel.Items)
+                    {
+                        string sqlLine = $"UPDATE [dbo].[OrderLine] SET AcceptedQty = {item.AcceptedQty} " +
+                                    $"WHERE Id = {item.Id}";
+                        cnn.Execute(sqlLine);
+                    }
+                }
+
+            }
+        }
+
 
         public void ChangeUserOrdersStatus(string BuyerId, StatusEnum fromStatus, StatusEnum intoStatus)
         {

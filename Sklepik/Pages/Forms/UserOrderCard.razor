@@ -10,9 +10,9 @@
                         <tbody>
                             <tr>
                                 <td><small><small>Zamówienie nr:</small></small></td>
-                                <td><small><small>@UserOrder.Id</small></small></td>
+                                <td><small><small>@UserOrder.Number</small></small></td>
                                 <td>
-                                    <button class="btn btn-danger float-sm-right" disabled="@UserOrder.CanBeDeleted" 
+                                    <button class="btn btn-danger float-sm-right @UserOrder.Visibility"
                                             @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
                                         Usuń całe zamówienie
                                     </button>
@@ -42,19 +42,21 @@
                             <tr>
                                 <th>Kod</th>
                                 <th>Nazwa</th>
-                                <th>Ilość</th>
+                                <th>Ilość zamówiona</th>
+                                <th>Ilość potwierzona</th>
                                 <th>Cena</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in @UserOrder.AvailableItems)
                             {
-                                <tr>
-                                    <td>@item.ItemId</td>
-                                    <td width="60%">@item.ItemName</td>
-                                    <td>@item.Quantity</td>
-                                    <td>@item.PriceGross</td>
-                                </tr>
+                            <tr>
+                                <td>@item.ItemId</td>
+                                <td width="60%">@item.ItemName</td>
+                                <td>@item.SubmittedQty</td>
+                                <td>@item.AcceptedQty</td>
+                                <td>@item.PriceGross</td>
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -92,7 +94,7 @@
         <MatTableRow>
             <td>@context.ItemId</td>
             <td width="60%">@context.ItemName</td>
-            <td>@context.Quantity</td>
+            <td>@context.SubmittedQty</td>
             <td>@context.PriceGross</td>
         </MatTableRow>
     </MatTable>

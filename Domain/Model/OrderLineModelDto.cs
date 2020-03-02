@@ -13,6 +13,7 @@ namespace Domain.Model
         public double PriceNet { get; set; }
         public double PriceGross { get; set; }
         public int Tax { get; set; }
-        public int Quantity { get; set; }
+        public int SubmittedQty { get; set; }
+        public int AcceptedQty { get; set; }
     }
 }

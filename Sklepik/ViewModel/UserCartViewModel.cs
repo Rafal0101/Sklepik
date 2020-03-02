@@ -77,7 +77,7 @@ namespace Sklepik.ViewModel
             foreach (var item in _userOrderHeaderModel.AvailableItems.Where(x => x.ItemId == model.ItemId))
             {
                 item.IsInCart = false;
-                item.Quantity = 1;
+                item.SubmittedQty = 1;
             }
             ItemsInCart.Remove(model);
         }
@@ -96,7 +96,7 @@ namespace Sklepik.ViewModel
                     PriceNet = item.PriceNet,
                     PriceGross = item.PriceGross,
                     Tax = item.Tax,
-                    Quantity = item.Quantity
+                    SubmittedQty = item.SubmittedQty
                 });
             }
 

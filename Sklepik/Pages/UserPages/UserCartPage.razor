@@ -22,7 +22,7 @@
                 <td>item.CategoryName</td>
                 <td>@item.ItemId</td>
                 <td>@item.ItemName</td>
-                <td><input type="number" @bind-value="@item.Quantity" data-decimals="0" min="1" max="999" step="1" /></td>
+                <td><input type="number" @bind-value="@item.SubmittedQty" data-decimals="0" min="1" max="999" step="1" /></td>
                 <td>@String.Format("{0:f2} zł", item.PriceGross)</td>
                 <td>@String.Format("{0:f2} zł", item.ValueGross)</td>
                 <td><a class="btn btn-danger btn-sm text-white" @onclick="@(() => _userCartViewModel.RemoveFromCart(item))">Usuń</a></td>

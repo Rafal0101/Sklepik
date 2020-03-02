@@ -25,11 +25,6 @@ namespace Sklepik.ViewModel
             LoadSummaryOrdersList();
         }
 
-        private void OrdersList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            int test = 1;
-        }
-
         private void LoadSummaryOrdersList()
         {
             StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
@@ -39,24 +34,7 @@ namespace Sklepik.ViewModel
 
         public void LoadOrdersList(string buyerId)
         {
-            //List<OrderHeaderModelDto> list = _orderRepository.GetUserOrderList(buyerId, OrderStatus.Submitted);
-
-            //foreach (var item in list)
-            //{
-            //    List<OrderLineModelDto> lines = item.Items;
-
-            //    OrdersList.Add(new SellerOrderHeaderModel
-            //    {
-            //        Id = item.Id,
-            //        BuyerId = item.BuyerId,
-            //        SellerId = item.SellerId,
-            //        Notification = item.Notification,
-            //        Status = item.Status,
-            //        SummaryValue = item.SummaryValue
-            //    });
-            //}
-
-            var config = new MapperConfiguration(cfg =>
+             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<OrderLineModelDto, SellerOrderLineModel>();
                 cfg.CreateMap<OrderHeaderModelDto, SellerOrderHeaderModel>()
@@ -66,22 +44,18 @@ namespace Sklepik.ViewModel
 
             StatusEnum[] statuses = new StatusEnum[] { StatusEnum.Submitted, StatusEnum.InReview };
             SellerOrdersList = iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(statuses, buyerId));
-            //OrdersList.AddRange(iMapper.Map<List<OrderHeaderModelDto>, TrulyObservableCollection<SellerOrderHeaderModel>>(_orderRepository.GetUserOrderList(buyerId, OrderStatus.InReview)));
-            //OrdersList.ForEach(x => { x.AvailableItems.ForEach(y => { y.NewQuantity = y.Quantity; }); });
-            //OrdersList = new TrulyObservableCollection<OrderHeaderModel>(RawOrdersList);
-            SellerOrdersList.ToList().ForEach(x => { x.Items.ToList().ForEach(y => { y.NewQuantity = y.Quantity; }); });
-            SellerOrdersList.CollectionChanged += OrdersList_CollectionChanged;
-
+            SellerOrdersList.ToList().ForEach(x => { x.Items.ToList().ForEach(y => { y.AcceptedQty = y.SubmittedQty; }); });
         }
 
 
 
         internal void UpdateUserOrdersStatus(string buyerId, StatusEnum submitted, StatusEnum inReview)
         {
+            CurrentBuyerId = buyerId;
             _orderRepository.ChangeUserOrdersStatus(buyerId, submitted, inReview);
         }
 
-        public void DeleteOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
+        public void RejectOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
         {
             _modalService.OnClose += _modalService_OnClose;
             var parameters = new ModalParameters();
@@ -94,7 +68,7 @@ namespace Sklepik.ViewModel
             };
             parameters.Add("order", userOrderHeaderModel);
             var options = new ModalOptions() { DisableBackgroundCancel = true };
-            _modalService.Show<DeleteIndyvidualOrderForm>("Czy na pewno chcesz usunąć zamówienie?", parameters, options);
+            _modalService.Show<DeleteIndyvidualOrderForm>("Czy na pewno musisz odrzucić zamówienie?", parameters, options);
         }
 
         private void _modalService_OnClose(ModalResult result)
@@ -102,16 +76,35 @@ namespace Sklepik.ViewModel
             if (!result.Cancelled)
             {
                 UserOrderHeaderModel updated = (UserOrderHeaderModel)result.Data;
-                _orderRepository.Delete(updated.Id);
+                
+                var config = new MapperConfiguration(cfg =>
+                {
+                    cfg.CreateMap<UserOrderLineModel, OrderLineModelDto>();
+                    cfg.CreateMap<UserOrderHeaderModel, OrderHeaderModelDto>();
+                });
+                IMapper iMapper = config.CreateMapper();
+
+                OrderHeaderModelDto modelDto = iMapper.Map<UserOrderHeaderModel, OrderHeaderModelDto>(updated);
+                _orderRepository.ChangeOrderStatus(modelDto, StatusEnum.Rejected);
                 LoadOrdersList(updated.BuyerId);
             }
             _modalService.OnClose -= _modalService_OnClose;
         }
 
-        public void DeleteOrderPosition(SellerOrderLineModel orderLineModel)
+        internal void ChangeOrderStatus(SellerOrderHeaderModel sellerOrderHeaderModel, StatusEnum status)
         {
-            var list = SellerOrdersList.SingleOrDefault(x => x.Id == orderLineModel.OrderHeaderId);
-            list.Items.Remove(orderLineModel);
+
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<SellerOrderLineModel, OrderLineModelDto>()
+                .ForMember(dest => dest.SubmittedQty, map => map.MapFrom(src => src.AcceptedQty));
+                cfg.CreateMap<SellerOrderHeaderModel, OrderHeaderModelDto>();
+            });
+            IMapper iMapper = config.CreateMapper();
+
+            OrderHeaderModelDto modelDto = iMapper.Map<SellerOrderHeaderModel, OrderHeaderModelDto>(sellerOrderHeaderModel);
+            _orderRepository.ChangeOrderStatus(modelDto, status);
+            LoadOrdersList(CurrentBuyerId);
         }
     }
 }

@@ -16,14 +16,25 @@ namespace Sklepik.Model
         public int Tax { get; set; }
 
 
-        private int _quantity;
-        public int Quantity
+        private int _submittedQty;
+        public int SubmittedQty
         {
-            get { return _quantity; }
+            get { return _submittedQty; }
             set 
             {
-                _quantity = value;
-                NotifyPropertyChanged(nameof(Quantity));
+                _submittedQty = value;
+                NotifyPropertyChanged(nameof(SubmittedQty));
+            }
+        }
+
+        private int _acceptedQty;
+        public int AcceptedQty
+        {
+            get { return _acceptedQty; }
+            set
+            {
+                _acceptedQty = value;
+                NotifyPropertyChanged(nameof(AcceptedQty));
             }
         }
 
@@ -32,7 +43,7 @@ namespace Sklepik.Model
         {
             get
             {
-                 return Math.Round((Quantity * PriceGross), 2);
+                 return Math.Round((SubmittedQty * PriceGross), 2);
             }
         }
 

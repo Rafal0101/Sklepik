@@ -26,28 +26,15 @@ namespace Sklepik.Pages.AdminPages
             _sellerCurrentOrderViewModel.UpdateUserOrdersStatus(buyerId, StatusEnum.Submitted, StatusEnum.InReview);
             _sellerCurrentOrderViewModel.LoadOrdersList(buyerId);
         }
-        void ClickDelOrderPosition(SellerOrderLineModel sellerOrderLineModel)
-        {
-            _sellerCurrentOrderViewModel.DeleteOrderPosition(sellerOrderLineModel);
-        }
 
         void RejectOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
         {
-            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+            _sellerCurrentOrderViewModel.RejectOrder(sellerOrderHeaderModel);
         }
         void AcceptOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
         {
-            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
+            _sellerCurrentOrderViewModel.ChangeOrderStatus(sellerOrderHeaderModel, StatusEnum.Accepted);
         }
-        void PayedOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
-        {
-            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
-        }
-        void DeliveredOrder(SellerOrderHeaderModel sellerOrderHeaderModel)
-        {
-            _sellerCurrentOrderViewModel.DeleteOrder(sellerOrderHeaderModel);
-        }
-
-
+ 
     }
 }

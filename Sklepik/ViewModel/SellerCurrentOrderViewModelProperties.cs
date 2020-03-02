@@ -1,4 +1,5 @@
 ﻿using Domain.Model;
+using Domain.Statuses;
 using Sklepik.Model;
 using System;
 using System.Collections.Generic;
@@ -32,5 +33,6 @@ namespace Sklepik.ViewModel
             }
         }
 
+        public string CurrentBuyerId { get; set; }
     }
 }
