@@ -113,7 +113,7 @@ namespace Sklepik.ViewModel
             {
                 ClearDataAfterOrder();
             }
-            _navigationManager.NavigateTo("\\mycurrentorders");
+            _navigationManager.NavigateTo("\\usercurrentorders");
         }
 
         #endregion

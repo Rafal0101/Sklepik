@@ -12,10 +12,12 @@
                                 <td><small><small>Zamówienie nr:</small></small></td>
                                 <td><small><small>@UserOrder.Number</small></small></td>
                                 <td>
-                                    <button class="btn btn-danger float-sm-right @UserOrder.Visibility"
-                                            @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
-                                        Usuń całe zamówienie
-                                    </button>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Info Sprzedawcy</span>
+                                        </div>
+                                        <textarea class="form-control" rows="3" @bind="@UserOrder.SellerNotification" readonly="readonly"></textarea>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -34,7 +36,7 @@
                     </table>
 
                 </h5>
-           
+
                 <div class="card-body">
 
                     <table class="blueTable">
@@ -42,27 +44,33 @@
                             <tr>
                                 <th>Kod</th>
                                 <th>Nazwa</th>
-                                <th>Ilość zamówiona</th>
-                                <th>Ilość potwierzona</th>
+                                <th>Ilość</th>
+                                <th>Akcept</th>
                                 <th>Cena</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in @UserOrder.AvailableItems)
                             {
-                            <tr>
-                                <td>@item.ItemId</td>
-                                <td width="60%">@item.ItemName</td>
-                                <td>@item.SubmittedQty</td>
-                                <td>@item.AcceptedQty</td>
-                                <td>@item.PriceGross</td>
-                            </tr>
+                                <tr>
+                                    <td>@item.ItemId</td>
+                                    <td width="60%">@item.ItemName</td>
+                                    <td>@item.SubmittedQty</td>
+                                    <td>@item.AcceptedQty</td>
+                                    <td>@item.PriceGross</td>
+                                </tr>
                             }
                         </tbody>
                     </table>
 
                 </div>
-                <div class="card-footer text-muted">@UserOrder.BuyerNotification</div>
+                <div class="card-footer text-muted">
+                    @UserOrder.BuyerNotification
+                    <button class="btn btn-danger float-sm-right @UserOrder.Visibility"
+                            @onclick="@(() => OnClickDel.InvokeAsync(UserOrder))">
+                        Usuń całe zamówienie
+                    </button>
+                </div>
             </div>
             <br />
         </div>
@@ -75,28 +83,3 @@
     [Parameter]
     public EventCallback<UserOrderHeaderModel> OnClickDel { get; set; }
 }
-
-
-@*
-
-    <MatTable Items="@MyOrder.Items"
-              LoadInitialData="true"
-              ShowPaging="false"
-              ShowFooter="false"
-              Striped="true"
-              DebounceMilliseconds="50">
-        <MatTableHeader>
-            <th>Kod</th>
-            <th>Nazwa</th>
-            <th>Ilość</th>
-            <th>Cena</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.ItemId</td>
-            <td width="60%">@context.ItemName</td>
-            <td>@context.SubmittedQty</td>
-            <td>@context.PriceGross</td>
-        </MatTableRow>
-    </MatTable>
-
-*@

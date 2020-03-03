@@ -11,6 +11,6 @@ namespace Domain
         void AddProduct(ProductModel product);
         void EditProduct(ProductModel product);
         void DeleteProduct(ProductModel product);
-        void ImportProductFromFile(MemoryStream memoryStream, bool purgeCategories = true, bool purgeProducts = true);
+        int ImportProductFromFile(MemoryStream memoryStream, bool purgeCategories = true, bool purgeProducts = true);
     }
 }

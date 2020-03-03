@@ -17,5 +17,6 @@ namespace Domain
         public int Tax { get; set; }
         public CategoryModel PrimaryCategory { get; set; }
         public List<CategoryModel> CategoryList { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 }

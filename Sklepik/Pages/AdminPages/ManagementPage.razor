@@ -1,0 +1,9 @@
+﻿@page "/managementpage"
+
+
+<h3>Strona zarządzania sklepem</h3>
+<p>
+    <label>Importuj cennik z pliku Excel:</label>
+    <BlazorInputFile.InputFile OnChange="ReadExcelPriceList"></BlazorInputFile.InputFile>
+</p>
+<p class="text-danger">@ImportMessage</p>

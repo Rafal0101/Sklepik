@@ -18,7 +18,7 @@ namespace Domain.Service
         }
         public List<ProductModel> ReadPriceListFile(MemoryStream fileBody)
         {
-            //ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             List<ProductModel> model = new List<ProductModel>();
 
@@ -29,23 +29,6 @@ namespace Domain.Service
                 var myWorksheet = xlPackage.Workbook.Worksheets.First();
                 var totalRows = myWorksheet.Dimension.End.Row;
                 var totalColumns = myWorksheet.Dimension.End.Column;
-
-
-                //if (schema == Const.DPD_SCHEMA)
-                //{
-                //    if (!(myWorksheet.Cells["A1"].Value.ToString() == "Kod Towaru" && myWorksheet.Cells["B1"].Value.ToString() == "Nr_Faktury"))
-                //    {
-                //        throw new Exception("Bledne pliki");
-                //    }
-                //}
-
-                //if (schema == Const.EROTRANS_SCHEMA)
-                //{
-                //    if (!(myWorksheet.Cells["A1"].Value.ToString() == "WARTOŚĆ" && myWorksheet.Cells["B1"].Value.ToString() == "WALUTA"))
-                //    {
-                //        throw new Exception("Bledne pliki");
-                //    }
-                //}
 
                 string category = "";
                 int categoryId = 0;

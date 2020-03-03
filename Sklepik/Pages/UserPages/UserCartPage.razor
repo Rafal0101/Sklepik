@@ -1,46 +1,52 @@
-﻿@page "/mycart";
+﻿@page "/usercart";
 
 <h3>Zawartość Twojego koszyka</h3>
-
-<div>
-    <table class="blueTable">
-        <thead>
-            <tr>
-                <th>Kategoria</th>
-                <th>Kod</th>
-                <th>Nazwa</th>
-                <th>Ilość</th>
-                <th>Cena Brutto</th>
-                <th>Wartość Brutto</th>
-                <th>Rezygnacja</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in _userCartViewModel.ItemsInCart)
-            {
-            <tr>
-                <td>item.CategoryName</td>
-                <td>@item.ItemId</td>
-                <td>@item.ItemName</td>
-                <td><input type="number" @bind-value="@item.SubmittedQty" data-decimals="0" min="1" max="999" step="1" /></td>
-                <td>@String.Format("{0:f2} zł", item.PriceGross)</td>
-                <td>@String.Format("{0:f2} zł", item.ValueGross)</td>
-                <td><a class="btn btn-danger btn-sm text-white" @onclick="@(() => _userCartViewModel.RemoveFromCart(item))">Usuń</a></td>
-            </tr>
-            }
-        </tbody>
-    </table>
-    <p></p>
-    <p>
-        <MatTextField @bind-Value="@_userCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true"></MatTextField>
-    </p>
-    <p>
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Dodatkowe powiadomienie dla sprzedawcy:</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" @bind="_userCartViewModel.Notification"></textarea>
-        </div>
-    </p>
-    <p>
-        <button type="button" class="btn btn-primary" @onclick="_userCartViewModel.SaveOrder">Składam zamówienie</button>
-    </p>
-</div>
+@if (_userCartViewModel.ItemsInCart.Count > 0)
+{
+    <div>
+        <table class="blueTable">
+            <thead>
+                <tr>
+                    <th>Kategoria</th>
+                    <th>Kod</th>
+                    <th>Nazwa</th>
+                    <th>Ilość</th>
+                    <th>Cena</th>
+                    <th>Wartość</th>
+                    <th>Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in _userCartViewModel.ItemsInCart)
+                {
+                    <tr>
+                        <td>@item.CategoryName</td>
+                        <td>@item.ItemId</td>
+                        <td>@item.ItemName</td>
+                        <td><input type="number" @bind-value="@item.SubmittedQty" data-decimals="0" min="1" max="999" step="1" /></td>
+                        <td>@String.Format("{0:f2} zł", item.PriceGross)</td>
+                        <td>@String.Format("{0:f2} zł", item.ValueGross)</td>
+                        <td><a class="btn btn-danger btn-sm text-white" @onclick="@(() => _userCartViewModel.RemoveFromCart(item))">Usuń</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p></p>
+        <p>
+            <MatTextField @bind-Value="@_userCartViewModel.SummaryOrderValue" ReadOnly="true" Label="Łączna wartość zamówienia" Outlined="true"></MatTextField>
+        </p>
+        <p>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Dodatkowe powiadomienie dla sprzedawcy:</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" @bind="_userCartViewModel.Notification"></textarea>
+            </div>
+        </p>
+        <p>
+            <button type="button" class="btn btn-primary" @onclick="_userCartViewModel.SaveOrder">Składam zamówienie</button>
+        </p>
+    </div>
+}
+else
+{
+    <p>Twój koszyk jest pusty :(</p>
+}

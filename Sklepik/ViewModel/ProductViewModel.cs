@@ -25,10 +25,6 @@ namespace Sklepik.ViewModel
         
             ProductList = new List<ProductModel>(_productRepository.GetAll());
             CategoryList = _categoryRepository.GetAll();
-            //foreach (var item in ProductList)
-            //{
-            //    item.PrimaryCategory = CategoryList.Where(x => x.Id == item.CategoryId).FirstOrDefault();
-            //}
         }
         private ActionState currentAction;
 
@@ -43,6 +39,7 @@ namespace Sklepik.ViewModel
             }
         }
 
+
         private string _searchingPattern;
         public string SearchingPattern
         {
@@ -50,10 +47,22 @@ namespace Sklepik.ViewModel
             set
             {
                 _searchingPattern = value;
-                ProductList = new List<ProductModel>(_productRepository.GetAll(SearchingPattern));
                 NotifyPropertyChanged(nameof(SearchingPattern));
+                for (int i = 0; i < ProductList.Count; i++)
+                {
+                    if (!ProductList[i].ItemId.ToLower().Contains(_searchingPattern.ToLower())
+                        && !ProductList[i].Name.ToLower().Contains(_searchingPattern.ToLower()))
+                    {
+                        ProductList[i].IsVisible = false;
+                    }
+                    else
+                    {
+                        ProductList[i].IsVisible = true;
+                    }
+                }
             }
         }
+
 
         public List<CategoryModel> CategoryList { get; private set; } = new List<CategoryModel>();
 
@@ -66,22 +75,11 @@ namespace Sklepik.ViewModel
             {
                 _priceListFileBody = value;
                 NotifyPropertyChanged(nameof(PriceListFileBody));
-                ActionMessage = "Wczytjuę NOWY cennik. Czekaj...";
                 _productRepository.ImportProductFromFile(_priceListFileBody);
                 ProductList = new List<ProductModel>(_productRepository.GetAll());
             }
         }
 
-        private string _actionMessage = string.Empty;
-        public string ActionMessage
-        {
-            get { return _actionMessage; }
-            set
-            {
-                _actionMessage = value;
-                NotifyPropertyChanged(nameof(ActionMessage));
-            }
-        }
 
         public void AddProduct()
         {

@@ -68,44 +68,48 @@ namespace DataAccess
             }
         }
 
-        public void ImportProductFromFile(MemoryStream fileBody, bool purgeCategories = true, bool purgeProducts = true)
+        public int ImportProductFromFile(MemoryStream fileBody, bool purgeCategories = true, bool purgeProducts = true)
         {
             #warning Dodac zrzut obu tabel do kopii
 
             List<ProductModel> products = _excelReaderService.ReadPriceListFile(fileBody);
-            using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
+            if (products != null && products.Count > 0)
             {
-                if (purgeProducts)
+                using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
                 {
-                    string sql = "DELETE FROM Products; DBCC CHECKIDENT ('[Products]', RESEED, 0);";
-                    cnn.Execute(sql);
-                }
-                if (purgeCategories)
-                {
-                    string sql = "DELETE FROM Categories; DBCC CHECKIDENT ('[Categories]', RESEED, 0);";
-                    cnn.Execute(sql);
-                }
-
-                List<CategoryModel> categories = products.Where(x => x.ItemId == null).Select(x => new CategoryModel { Code = x.PrimaryCategory.Name, Name = x.PrimaryCategory.Name }).ToList();
-
-                foreach (var item in categories)
-                {
-                    string sql = $"INSERT INTO Categories (Code, Name) VALUES ('{item.Code.Trim()}', '{item.Name.Trim()}')";
-                    cnn.Execute(sql);
-                }
-
-                foreach (var item in products)
-                {
-                    if (item.ItemId != null)
+                    if (purgeProducts)
                     {
-                        string name = item.Name == null ? "" : item.Name;
-                        string sql = $"INSERT INTO Products (CategoryId, ItemId, Name, PriceGross) " +
-                            $"VALUES (@CategoryId, @ItemId, @Name, @PriceGross)";
-                        cnn.Execute(sql, new { CategoryId = item.PrimaryCategory.Id, ItemId = item.ItemId.Trim() , Name = name.Trim(), PriceGross = Math.Round(item.PriceGross, 2) });
+                        string sql = "DELETE FROM Products; DBCC CHECKIDENT ('[Products]', RESEED, 0);";
+                        cnn.Execute(sql);
                     }
-                }
+                    if (purgeCategories)
+                    {
+                        string sql = "DELETE FROM Categories; DBCC CHECKIDENT ('[Categories]', RESEED, 0);";
+                        cnn.Execute(sql);
+                    }
 
+                    List<CategoryModel> categories = products.Where(x => x.ItemId == null).Select(x => new CategoryModel { Code = x.PrimaryCategory.Name, Name = x.PrimaryCategory.Name }).ToList();
+
+                    foreach (var item in categories)
+                    {
+                        string sql = $"INSERT INTO Categories (Code, Name) VALUES ('{item.Code.Trim()}', '{item.Name.Trim()}')";
+                        cnn.Execute(sql);
+                    }
+
+                    foreach (var item in products)
+                    {
+                        if (item.ItemId != null)
+                        {
+                            string name = item.Name == null ? "" : item.Name;
+                            string sql = $"INSERT INTO Products (CategoryId, ItemId, Name, PriceGross) " +
+                                $"VALUES (@CategoryId, @ItemId, @Name, @PriceGross)";
+                            cnn.Execute(sql, new { CategoryId = item.PrimaryCategory.Id, ItemId = item.ItemId.Trim(), Name = name.Trim(), PriceGross = Math.Round(item.PriceGross, 2) });
+                        }
+                    }
+
+                }
             }
+            return products.Count;
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Sklepik
             services.AddTransient<UserOrderViewModel>();
             services.AddTransient<UserCartViewModel>();
             services.AddTransient<UserCurrentOrdersViewModel>();
-            services.AddTransient<SellerCurrentOrderViewModel>();
+            services.AddTransient<VerifyOrderViewModel>();
 
             services.AddScoped<UserOrderHeaderModel>();
 

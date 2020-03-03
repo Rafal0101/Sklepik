@@ -11,6 +11,7 @@ namespace Domain
         List<OrderSummaryModel> OrderHeadersInStatusGet(StatusEnum[] statuses);
         void ChangeOrderStatus(OrderHeaderModelDto modelDto, StatusEnum newStatus);
         void ChangeUserOrdersStatus(string BuyerId, StatusEnum fromStatus, StatusEnum intoStatus);
+        void ChangeOrderStatusAsAccepted(OrderHeaderModelDto dtoModel, string SellerId);
         void Delete(int id);
     }
 }

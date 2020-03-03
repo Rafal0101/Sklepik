@@ -33,10 +33,16 @@ namespace DataAccess
                         $"SELECT CAST(SCOPE_IDENTITY() as int)";
 
                     var result = cnn.ExecuteScalar(sqlHeader,
-                        new { BuyerId = buyer
-                        , Status = Const.StatusesList.Where(x => x.Status == StatusEnum.Submitted).FirstOrDefault().StatusId
-                        , BuyerNotification = buyerNotification
-                        , SummaryValue = summaryOrderValue },
+                        new
+                        {
+                            BuyerId = buyer
+                        ,
+                            Status = Const.StatusesList.Where(x => x.Status == StatusEnum.Submitted).FirstOrDefault().StatusId
+                        ,
+                            BuyerNotification = buyerNotification
+                        ,
+                            SummaryValue = summaryOrderValue
+                        },
                         transaction: transaction);
 
                     int OrderHeaderId = Convert.ToInt32(result);
@@ -67,10 +73,16 @@ namespace DataAccess
                     //int testStatus = Const.StatusesList.Where(x => x.Status == StatusEnum.Submitted).FirstOrDefault().StatusId;
 
                     headers.AddRange(cnn.Query<OrderHeaderModelDto>("dbo.OrderHeaderGet"
-                        , param: new { BuyerId = buyer
-                        , Status = Const.StatusesList.Where(x => x.Status == status).FirstOrDefault().StatusId
-                        , SellerId = seller
-                        , Id = id }
+                        , param: new
+                        {
+                            BuyerId = buyer
+                        ,
+                            Status = Const.StatusesList.Where(x => x.Status == status).FirstOrDefault().StatusId
+                        ,
+                            SellerId = seller
+                        ,
+                            Id = id
+                        }
                         , commandType: CommandType.StoredProcedure).ToList());
 
                     foreach (var item in headers)
@@ -110,24 +122,37 @@ namespace DataAccess
         {
             using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
             {
-                string sqlHead = $"UPDATE [dbo].[OrderHeader] SET Status = @Status, SummaryValue = @SummaryValue WHERE Id = @Id";
+                string sqlHead = $"UPDATE [dbo].[OrderHeader] SET Status = @Status WHERE Id = @Id";
 
-                cnn.Execute(sqlHead, new { Status = Const.StatusesList.Where(x => x.Status == newStatus).FirstOrDefault().StatusId
-                    , dtoModel.SummaryValue, dtoModel.Id});
+                cnn.Execute(sqlHead, new { Status = Const.StatusesList.Where(x => x.Status == newStatus).FirstOrDefault().StatusId, dtoModel.Id });
+            }
+        }
 
-                if (newStatus == StatusEnum.Accepted)
+        public void ChangeOrderStatusAsAccepted(OrderHeaderModelDto dtoModel, string SellerId)
+        {
+            using (IDbConnection cnn = new SqlConnection(_sqlDataAccess.GetConnectionString()))
+            {
+                string sqlHead = $"UPDATE [dbo].[OrderHeader] SET Status = @Status, SellerId = @SellerId, " +
+                    $"SummaryValue = @SummaryValue, SellerNotification = @SellerNotification WHERE Id = @Id";
+
+                cnn.Execute(sqlHead, new
                 {
-                    foreach (var item in dtoModel.Items)
-                    {
-                        string sqlLine = $"UPDATE [dbo].[OrderLine] SET AcceptedQty = {item.AcceptedQty} " +
-                                    $"WHERE Id = {item.Id}";
-                        cnn.Execute(sqlLine);
-                    }
+                    Status = Const.StatusesList.Where(x => x.Status == StatusEnum.Accepted).FirstOrDefault().StatusId,
+                    SellerId,
+                    dtoModel.SummaryValue,
+                    dtoModel.SellerNotification,
+                    dtoModel.Id
+                });
+
+                foreach (var item in dtoModel.Items)
+                {
+                    string sqlLine = $"UPDATE [dbo].[OrderLine] SET AcceptedQty = {item.AcceptedQty} " +
+                                $"WHERE Id = {item.Id}";
+                    cnn.Execute(sqlLine);
                 }
 
             }
         }
-
 
         public void ChangeUserOrdersStatus(string BuyerId, StatusEnum fromStatus, StatusEnum intoStatus)
         {

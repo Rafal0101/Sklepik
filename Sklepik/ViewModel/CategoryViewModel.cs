@@ -30,18 +30,31 @@ namespace Sklepik.ViewModel
             CategoryList = new List<CategoryModel>(_categoryRepository.GetAll());
         }
 
+        #region PROPS
+
         private string _searchingPattern;
         public string SearchingPattern
         {
             get { return _searchingPattern; }
-            set 
-            { 
+            set
+            {
                 _searchingPattern = value;
-                CategoryList = new List<CategoryModel>(_categoryRepository.GetAll(SearchingPattern));
                 NotifyPropertyChanged(nameof(SearchingPattern));
-             }
+                for (int i = 0; i < CategoryList.Count; i++)
+                {
+                    if (!CategoryList[i].Code.ToLower().Contains(_searchingPattern.ToLower())
+                        && !CategoryList[i].Name.ToLower().Contains(_searchingPattern.ToLower()))
+                    {
+                        CategoryList[i].IsVisible = false;
+                    }
+                    else
+                    {
+                        CategoryList[i].IsVisible = true;
+                    }
+                }
+            }
         }
-   
+
         private List<CategoryModel> _categorysList = new List<CategoryModel>();
          public List<CategoryModel> CategoryList
         {
@@ -52,6 +65,7 @@ namespace Sklepik.ViewModel
                 NotifyPropertyChanged(nameof(CategoryList));
             }
         }
+        #endregion
 
         public void AddCategory()
         {

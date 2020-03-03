@@ -16,7 +16,12 @@
     <AuthorizeView Roles="Admin">
         <ul class="nav flex-column">
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="categorypage" Match="NavLinkMatch.All">
+                <NavLink class="nav-link" href="managementpage" Match="NavLinkMatch.All">
+                    <span class="oi oi-wrench" aria-hidden="true"></span>Zarządzanie
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="categorypage">
                     <span class="oi oi-grid-two-up" aria-hidden="true"></span>Kategorie
                 </NavLink>
             </li>
@@ -31,8 +36,13 @@
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="dealorderspage">
+                <NavLink class="nav-link" href="dealsorderspage">
                     <span class="oi oi-loop-square" aria-hidden="true"></span>Wydawanie zamówień
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="historyorderspage">
+                    <span class="oi oi-header" aria-hidden="true"></span>Historia zamówień
                 </NavLink>
             </li>
         </ul>
@@ -41,23 +51,23 @@
     <AuthorizeView Roles="Admin, User">
         <ul class="nav flex-column">
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="myorder">
+                <NavLink class="nav-link" href="userorder">
                     <span class="oi oi-dollar" aria-hidden="true"></span> Na zakupy...
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="mycart">
+                <NavLink class="nav-link" href="usercart">
                     <span class="oi oi-cart" aria-hidden="true"></span> Mój koszyk
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="mycurrentorders">
-                    <span class="oi oi-folder" aria-hidden="true"></span>Bieżące zamówienia
+                <NavLink class="nav-link" href="usercurrentorders">
+                    <span class="oi oi-magnifying-glass" aria-hidden="true"></span>Stan moich zamówień
                 </NavLink>
             </li>
             <li class="nav-item px-3">
-                <NavLink class="nav-link" href="myorderhistory">
-                    <span class="oi oi-folder" aria-hidden="true"></span>Historia zamówień
+                <NavLink class="nav-link" href="userorderhistory">
+                    <span class="oi oi-header" aria-hidden="true"></span>Historia zamówień
                 </NavLink>
             </li>
         </ul>

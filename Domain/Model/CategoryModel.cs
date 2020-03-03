@@ -12,5 +12,6 @@ namespace Domain
         [Required]
         public string Code { get; set; }
         public string Name { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 }

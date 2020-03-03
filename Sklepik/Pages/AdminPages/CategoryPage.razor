@@ -3,11 +3,11 @@
 
 <h3>Strona kategorii</h3>
 <p>
-<button class="btn btn-primary text-white" @onclick="@(() => _categoryViewModel.AddCategory())">
-    Dodaj nową kategorię
-</button>
+    <button class="btn btn-primary text-white" @onclick="@(() => _categoryViewModel.AddCategory())">
+        Dodaj nową kategorię
+    </button>
     <label style="margin-left: 100px;">Wyszukaj</label>
-    <input  @bind-value="_categoryViewModel.SearchingPattern" @bind-value:event="oninput"/>
+    <input @bind-value="_categoryViewModel.SearchingPattern" @bind-value:event="oninput" />
 </p>
 <table class="blueTable">
     <thead>
@@ -20,19 +20,21 @@
     <tbody>
         @foreach (var item in _categoryViewModel.CategoryList)
         {
-            <tr>
-
-                <td>@item.Code</td>
-                <td>@item.Name</td>
-                <td align="center" width="150px">
-                    <button class="btn btn-primary btn-sm text-white" @onclick="@(() => _categoryViewModel.EditCategory(item))">
-                        Edytuj
-                    </button>
-                    <button class="btn btn-danger btn-sm text-white" @onclick="@(() => _categoryViewModel.DeleteCategory(item))">
-                        Usuń
-                    </button>
-                </td>
-            </tr>
+            if (item.IsVisible == true)
+            {
+                <tr>
+                    <td>@item.Code</td>
+                    <td>@item.Name</td>
+                    <td align="center" width="150px">
+                        <button class="btn btn-primary btn-sm text-white" @onclick="@(() => _categoryViewModel.EditCategory(item))">
+                            Edytuj
+                        </button>
+                        <button class="btn btn-danger btn-sm text-white" @onclick="@(() => _categoryViewModel.DeleteCategory(item))">
+                            Usuń
+                        </button>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

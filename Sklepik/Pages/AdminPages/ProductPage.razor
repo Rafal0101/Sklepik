@@ -1,16 +1,13 @@
 ﻿@page "/productpage"
 
-    <h3>Strona produktów</h3>
-    <p>
-        <button class="btn btn-primary text-white" @onclick="@(() => _productViewModel.AddProduct())">
-            Dodaj nowy produkt
-        </button>
-        <label style="margin-left: 100px;">Wyszukaj: </label>
-        <input @bind-value="_productViewModel.SearchingPattern" @bind-value:event="oninput" />
-        <label style="margin-left: 100px;">Importuj z Excel</label>
-        <BlazorInputFile.InputFile OnChange="ReadExcelPriceList"></BlazorInputFile.InputFile>
-        <label style="margin-left: 10px;">@_productViewModel.ActionMessage</label>
-    </p>
+<h3>Strona produktów</h3>
+<p>
+    <button class="btn btn-primary text-white" @onclick="@(() => _productViewModel.AddProduct())">
+        Dodaj nowy produkt
+    </button>
+    <label style="margin-left: 100px;">Wyszukaj: </label>
+    <input @bind-value="_productViewModel.SearchingPattern" @bind-value:event="oninput" />
+</p>
 <table class="blueTable">
     <thead>
         <tr>
@@ -26,24 +23,25 @@
     <tbody>
         @foreach (var item in _productViewModel.ProductList)
         {
-        <tr>
-
-            <td>@item.ItemId</td>
-            <td>@item.Name</td>
-            <td>@item.PriceNet</td>
-            <td>@item.Tax</td>
-            <td>@item.PriceGross</td>
-            <td>
-                <a class="badge badge-primary btn-sm text-white" @onclick="@(() => _productViewModel.EditProduct(item))">
-                    Edytuj
-                </a>
-                <a class="badge badge-danger btn-sm text-white" @onclick="@(() => _productViewModel.DeleteProduct(item))">
-                    Usuń
-                </a>
-            </td>
-            <td>@item.PrimaryCategory.Code</td>
-        </tr>
-
+            if (item.IsVisible == true)
+            {
+                <tr>
+                    <td>@item.ItemId</td>
+                    <td>@item.Name</td>
+                    <td>@item.PriceNet</td>
+                    <td>@item.Tax</td>
+                    <td>@item.PriceGross</td>
+                    <td>
+                        <a class="badge badge-primary btn-sm text-white" @onclick="@(() => _productViewModel.EditProduct(item))">
+                            Edytuj
+                        </a>
+                        <a class="badge badge-danger btn-sm text-white" @onclick="@(() => _productViewModel.DeleteProduct(item))">
+                            Usuń
+                        </a>
+                    </td>
+                    <td>@item.PrimaryCategory.Code</td>
+                </tr>
+            }
         }
     </tbody>
 </table>
